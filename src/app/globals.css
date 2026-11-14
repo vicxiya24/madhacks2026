@@ -1,0 +1,177 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Palette: an excavation trench. Sand surfaces, umber ink, ochre accents,
+ * with stratum colours that darken as you dig deeper.
+ */
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.975 0.012 80);
+  --foreground: oklch(0.24 0.03 50);
+  --card: oklch(0.99 0.008 80);
+  --card-foreground: oklch(0.24 0.03 50);
+  --popover: oklch(0.99 0.008 80);
+  --popover-foreground: oklch(0.24 0.03 50);
+  --primary: oklch(0.52 0.12 50);
+  --primary-foreground: oklch(0.98 0.01 80);
+  --secondary: oklch(0.93 0.025 75);
+  --secondary-foreground: oklch(0.3 0.04 50);
+  --muted: oklch(0.94 0.018 78);
+  --muted-foreground: oklch(0.5 0.03 55);
+  --accent: oklch(0.9 0.05 80);
+  --accent-foreground: oklch(0.28 0.04 50);
+  --destructive: oklch(0.55 0.2 27);
+  --border: oklch(0.88 0.025 75);
+  --input: oklch(0.86 0.025 75);
+  --ring: oklch(0.62 0.12 60);
+
+  /* sedimentary strata, shallow -> deep */
+  --stratum-1: oklch(0.88 0.06 85);
+  --stratum-2: oklch(0.8 0.08 70);
+  --stratum-3: oklch(0.7 0.09 55);
+  --stratum-4: oklch(0.58 0.08 45);
+  --stratum-5: oklch(0.46 0.06 40);
+
+  /* consolidation states */
+  --stable: oklch(0.55 0.09 160);
+  --labile: oklch(0.7 0.16 65);
+  --contested: oklch(0.58 0.17 25);
+}
+
+.dark {
+  --background: oklch(0.18 0.015 50);
+  --foreground: oklch(0.93 0.015 80);
+  --card: oklch(0.22 0.018 50);
+  --card-foreground: oklch(0.93 0.015 80);
+  --popover: oklch(0.22 0.018 50);
+  --popover-foreground: oklch(0.93 0.015 80);
+  --primary: oklch(0.72 0.13 65);
+  --primary-foreground: oklch(0.2 0.02 50);
+  --secondary: oklch(0.28 0.02 50);
+  --secondary-foreground: oklch(0.9 0.015 80);
+  --muted: oklch(0.27 0.018 50);
+  --muted-foreground: oklch(0.7 0.025 70);
+  --accent: oklch(0.32 0.03 55);
+  --accent-foreground: oklch(0.93 0.015 80);
+  --destructive: oklch(0.65 0.19 25);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.72 0.13 65);
+
+  --stratum-1: oklch(0.5 0.06 80);
+  --stratum-2: oklch(0.43 0.07 65);
+  --stratum-3: oklch(0.37 0.07 52);
+  --stratum-4: oklch(0.31 0.05 45);
+  --stratum-5: oklch(0.26 0.035 40);
+
+  --stable: oklch(0.7 0.11 160);
+  --labile: oklch(0.78 0.15 70);
+  --contested: oklch(0.68 0.17 25);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: oklch(0.18 0.015 50);
+    --foreground: oklch(0.93 0.015 80);
+    --card: oklch(0.22 0.018 50);
+    --card-foreground: oklch(0.93 0.015 80);
+    --popover: oklch(0.22 0.018 50);
+    --popover-foreground: oklch(0.93 0.015 80);
+    --primary: oklch(0.72 0.13 65);
+    --primary-foreground: oklch(0.2 0.02 50);
+    --secondary: oklch(0.28 0.02 50);
+    --secondary-foreground: oklch(0.9 0.015 80);
+    --muted: oklch(0.27 0.018 50);
+    --muted-foreground: oklch(0.7 0.025 70);
+    --accent: oklch(0.32 0.03 55);
+    --accent-foreground: oklch(0.93 0.015 80);
+    --destructive: oklch(0.65 0.19 25);
+    --border: oklch(1 0 0 / 12%);
+    --input: oklch(1 0 0 / 16%);
+    --ring: oklch(0.72 0.13 65);
+
+    --stratum-1: oklch(0.5 0.06 80);
+    --stratum-2: oklch(0.43 0.07 65);
+    --stratum-3: oklch(0.37 0.07 52);
+    --stratum-4: oklch(0.31 0.05 45);
+    --stratum-5: oklch(0.26 0.035 40);
+
+    --stable: oklch(0.7 0.11 160);
+    --labile: oklch(0.78 0.15 70);
+    --contested: oklch(0.68 0.17 25);
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-fraunces);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-stratum-1: var(--stratum-1);
+  --color-stratum-2: var(--stratum-2);
+  --color-stratum-3: var(--stratum-3);
+  --color-stratum-4: var(--stratum-4);
+  --color-stratum-5: var(--stratum-5);
+
+  --color-stable: var(--stable);
+  --color-labile: var(--labile);
+  --color-contested: var(--contested);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Subtle soil texture for the excavation surface */
+.soil-texture {
+  background-image:
+    radial-gradient(circle at 20% 30%, oklch(0.5 0.05 50 / 6%) 1px, transparent 1.5px),
+    radial-gradient(circle at 70% 60%, oklch(0.5 0.05 50 / 5%) 1px, transparent 1.5px);
+  background-size: 18px 18px, 26px 26px;
+}
+
+@keyframes labile-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.7 0.16 65 / 45%); }
+  50% { box-shadow: 0 0 0 10px oklch(0.7 0.16 65 / 0%); }
+}
+
+.labile-pulse {
+  animation: labile-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .labile-pulse { animation: none; }
+}
