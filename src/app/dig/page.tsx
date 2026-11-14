@@ -1,45 +1,42 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { StrataTimeline } from "@/components/memory/strata-timeline";
+import { FossilStrata } from "@/components/dig/fossil-strata";
 import { listMemories } from "@/lib/memory/queries";
 
-export const metadata: Metadata = { title: "Dig site" };
+export const metadata: Metadata = { title: "Your dig site" };
 
-export default async function DigSitePage() {
-  const memories = await listMemories();
+export default async function DigSitePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ buried?: string }>;
+}) {
+  await connection();
+  const [{ buried }, memories] = await Promise.all([searchParams, listMemories()]);
 
   return (
-    <div className="grid gap-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="pt-10">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-4 px-6 pb-6">
         <div>
-          <h1 className="font-serif text-3xl">Your dig site</h1>
+          <h1 className="font-hand text-5xl font-bold">your dig site</h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            Recent memories sit near the surface. Scroll down to dig into older strata.
+            {memories.length === 0
+              ? "Nothing's buried yet. Write your first entry and it'll settle into the layers below."
+              : buried
+                ? "Your memory is buried. Tap any fossil to revisit it."
+                : "The deeper the layer, the further back the memory. Tap a fossil to revisit it."}
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="rounded-full">
           <Link href="/dig/new">
-            <Plus aria-hidden /> Log a memory
+            <Plus aria-hidden /> New entry
           </Link>
         </Button>
       </div>
 
-      {memories.length === 0 ? (
-        <div className="soil-texture bg-card grid place-items-center gap-3 rounded-xl border border-dashed px-6 py-20 text-center">
-          <p className="font-serif text-xl">Undisturbed ground</p>
-          <p className="text-muted-foreground max-w-sm text-sm">
-            Start with a memory that keeps resurfacing: a childhood scene, an old argument, a
-            moment you tell differently every time.
-          </p>
-          <Button asChild className="mt-2">
-            <Link href="/dig/new">Log your first memory</Link>
-          </Button>
-        </div>
-      ) : (
-        <StrataTimeline memories={memories} />
-      )}
+      <FossilStrata memories={memories} now={Date.now()} highlightId={buried} />
     </div>
   );
 }

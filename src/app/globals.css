@@ -1,118 +1,63 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 /*
- * Palette: an excavation trench. Sand surfaces, umber ink, ochre accents,
- * with stratum colours that darken as you dig deeper.
+ * Dreamlike night palette, sampled from the concept drawings:
+ * periwinkle shallows fading into deep indigo, lavender fossils,
+ * and a warm honey bear for contrast.
  */
 :root {
-  --radius: 0.625rem;
+  --radius: 1rem;
 
-  --background: oklch(0.975 0.012 80);
-  --foreground: oklch(0.24 0.03 50);
-  --card: oklch(0.99 0.008 80);
-  --card-foreground: oklch(0.24 0.03 50);
-  --popover: oklch(0.99 0.008 80);
-  --popover-foreground: oklch(0.24 0.03 50);
-  --primary: oklch(0.52 0.12 50);
-  --primary-foreground: oklch(0.98 0.01 80);
-  --secondary: oklch(0.93 0.025 75);
-  --secondary-foreground: oklch(0.3 0.04 50);
-  --muted: oklch(0.94 0.018 78);
-  --muted-foreground: oklch(0.5 0.03 55);
-  --accent: oklch(0.9 0.05 80);
-  --accent-foreground: oklch(0.28 0.04 50);
-  --destructive: oklch(0.55 0.2 27);
-  --border: oklch(0.88 0.025 75);
-  --input: oklch(0.86 0.025 75);
-  --ring: oklch(0.62 0.12 60);
+  --background: #161838;
+  --foreground: #e7eafb;
+  --card: rgb(46 50 104 / 0.55);
+  --card-foreground: #e7eafb;
+  --popover: #262a5c;
+  --popover-foreground: #e7eafb;
+  --primary: #a0b9e6;
+  --primary-foreground: #1a1c42;
+  --secondary: #3a3d78;
+  --secondary-foreground: #e7eafb;
+  --muted: rgb(58 61 120 / 0.6);
+  --muted-foreground: #aab3dc;
+  --accent: rgb(127 142 203 / 0.25);
+  --accent-foreground: #f1f3ff;
+  --destructive: #f08aa0;
+  --border: rgb(200 214 255 / 0.16);
+  --input: rgb(200 214 255 / 0.22);
+  --ring: #a0b9e6;
 
-  /* sedimentary strata, shallow -> deep */
-  --stratum-1: oklch(0.88 0.06 85);
-  --stratum-2: oklch(0.8 0.08 70);
-  --stratum-3: oklch(0.7 0.09 55);
-  --stratum-4: oklch(0.58 0.08 45);
-  --stratum-5: oklch(0.46 0.06 40);
+  /* strata, shallow -> deep (from drawing 2) */
+  --stratum-1: #c9e0f7;
+  --stratum-2: #a0b9e6;
+  --stratum-3: #7f8ecb;
+  --stratum-4: #575392;
+  --stratum-5: #3f3e6d;
+
+  /* night sky */
+  --sky-top: #0f1130;
+  --sky-mid: #262a63;
+  --sky-low: #5a62a8;
+
+  /* ink + bear (from drawing 1) */
+  --ink: #26364f;
+  --bear: #dfc4af;
+  --bear-feature: #6f5646;
 
   /* consolidation states */
-  --stable: oklch(0.55 0.09 160);
-  --labile: oklch(0.7 0.16 65);
-  --contested: oklch(0.58 0.17 25);
-}
-
-.dark {
-  --background: oklch(0.18 0.015 50);
-  --foreground: oklch(0.93 0.015 80);
-  --card: oklch(0.22 0.018 50);
-  --card-foreground: oklch(0.93 0.015 80);
-  --popover: oklch(0.22 0.018 50);
-  --popover-foreground: oklch(0.93 0.015 80);
-  --primary: oklch(0.72 0.13 65);
-  --primary-foreground: oklch(0.2 0.02 50);
-  --secondary: oklch(0.28 0.02 50);
-  --secondary-foreground: oklch(0.9 0.015 80);
-  --muted: oklch(0.27 0.018 50);
-  --muted-foreground: oklch(0.7 0.025 70);
-  --accent: oklch(0.32 0.03 55);
-  --accent-foreground: oklch(0.93 0.015 80);
-  --destructive: oklch(0.65 0.19 25);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.72 0.13 65);
-
-  --stratum-1: oklch(0.5 0.06 80);
-  --stratum-2: oklch(0.43 0.07 65);
-  --stratum-3: oklch(0.37 0.07 52);
-  --stratum-4: oklch(0.31 0.05 45);
-  --stratum-5: oklch(0.26 0.035 40);
-
-  --stable: oklch(0.7 0.11 160);
-  --labile: oklch(0.78 0.15 70);
-  --contested: oklch(0.68 0.17 25);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --background: oklch(0.18 0.015 50);
-    --foreground: oklch(0.93 0.015 80);
-    --card: oklch(0.22 0.018 50);
-    --card-foreground: oklch(0.93 0.015 80);
-    --popover: oklch(0.22 0.018 50);
-    --popover-foreground: oklch(0.93 0.015 80);
-    --primary: oklch(0.72 0.13 65);
-    --primary-foreground: oklch(0.2 0.02 50);
-    --secondary: oklch(0.28 0.02 50);
-    --secondary-foreground: oklch(0.9 0.015 80);
-    --muted: oklch(0.27 0.018 50);
-    --muted-foreground: oklch(0.7 0.025 70);
-    --accent: oklch(0.32 0.03 55);
-    --accent-foreground: oklch(0.93 0.015 80);
-    --destructive: oklch(0.65 0.19 25);
-    --border: oklch(1 0 0 / 12%);
-    --input: oklch(1 0 0 / 16%);
-    --ring: oklch(0.72 0.13 65);
-
-    --stratum-1: oklch(0.5 0.06 80);
-    --stratum-2: oklch(0.43 0.07 65);
-    --stratum-3: oklch(0.37 0.07 52);
-    --stratum-4: oklch(0.31 0.05 45);
-    --stratum-5: oklch(0.26 0.035 40);
-
-    --stable: oklch(0.7 0.11 160);
-    --labile: oklch(0.78 0.15 70);
-    --contested: oklch(0.68 0.17 25);
-  }
+  --stable: #9fe0c9;
+  --labile: #f6d38b;
+  --contested: #f39bb0;
 }
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-fraunces);
+  --font-hand: var(--font-gaegu);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
@@ -140,6 +85,9 @@
   --color-stratum-3: var(--stratum-3);
   --color-stratum-4: var(--stratum-4);
   --color-stratum-5: var(--stratum-5);
+  --color-ink: var(--ink);
+  --color-bear: var(--bear);
+  --color-bear-feature: var(--bear-feature);
 
   --color-stable: var(--stable);
   --color-labile: var(--labile);
@@ -150,28 +98,54 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    color-scheme: dark;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgb(160 185 230 / 0.18), transparent 70%),
+      linear-gradient(180deg, var(--sky-top) 0%, var(--background) 45%, #1d1f4a 100%);
+    background-attachment: fixed;
+    background-color: var(--background);
+  }
+  ::selection {
+    background: rgb(160 185 230 / 0.4);
   }
 }
 
-/* Subtle soil texture for the excavation surface */
-.soil-texture {
-  background-image:
-    radial-gradient(circle at 20% 30%, oklch(0.5 0.05 50 / 6%) 1px, transparent 1.5px),
-    radial-gradient(circle at 70% 60%, oklch(0.5 0.05 50 / 5%) 1px, transparent 1.5px);
-  background-size: 18px 18px, 26px 26px;
+/* Cards glow faintly, like things seen underwater at night */
+[data-slot="card"] {
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 0 1px rgb(200 214 255 / 0.06) inset,
+    0 20px 50px -20px rgb(5 6 25 / 0.6);
 }
 
-@keyframes labile-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 oklch(0.7 0.16 65 / 45%); }
-  50% { box-shadow: 0 0 0 10px oklch(0.7 0.16 65 / 0%); }
+/* ---------- motion ---------- */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+@keyframes drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.025); }
+}
+@keyframes rise {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 0.9; }
+  100% { transform: translateY(-120px); opacity: 0; }
 }
 
-.labile-pulse {
-  animation: labile-pulse 2.4s ease-in-out infinite;
-}
+.animate-twinkle { animation: twinkle 3.2s ease-in-out infinite; }
+.animate-drift { animation: drift 6s ease-in-out infinite; }
+.animate-breathe { animation: breathe 4.5s ease-in-out infinite; transform-origin: bottom center; }
+.animate-rise { animation: rise 9s linear infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .labile-pulse { animation: none; }
+  .animate-twinkle, .animate-drift, .animate-breathe, .animate-rise { animation: none; }
 }

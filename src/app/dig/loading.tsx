@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="grid gap-3" aria-busy="true" aria-label="Loading">
+    <div className="mx-auto grid max-w-5xl gap-3 px-4 py-10" aria-busy="true" aria-label="Loading">
       {[1, 2, 3, 4, 5].map((n) => (
         <div
           key={n}

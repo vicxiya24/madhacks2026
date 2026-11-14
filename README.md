@@ -1,8 +1,8 @@
 # Memory Archaeologist
 
-Treat memory like a dig site. Log a memory as separate **sedimentary layers**, reopen it inside a
-time-boxed **reconsolidation window**, meet an AI-generated **prediction error**, and deposit a
-reframe on top of the original, which is never overwritten. Then compare how your story shifted.
+Treat memory like a dig site. Write a memory down, let it settle into the strata as a fossil,
+**dive back in** later and retell it from memory using only a clue you left yourself, then
+compare how your story has shifted.
 
 > Reflective journaling tool, not therapy or medical care.
 
@@ -18,11 +18,10 @@ npm install
 cp .env.example .env.local      # fill in Supabase URL + anon key (OpenAI key optional)
 ```
 
-**Database**: pick one:
+**Database**: run both migrations in order (Supabase dashboard → SQL Editor, or `supabase db push`):
 
-- Supabase dashboard → SQL Editor → paste and run
-  `supabase/migrations/20261114000000_init_memory_archaeologist.sql`
-- or with the CLI: `supabase link --project-ref <ref> && supabase db push`
+1. `supabase/migrations/20261114000000_init_memory_archaeologist.sql`
+2. `supabase/migrations/20261115000000_dreamlike_redesign.sql`
 
 **Auth**: Email/password is enabled by default. For quick hackathon demos, you can turn off
 *Confirm email* under Authentication → Providers → Email. Otherwise, add
@@ -32,18 +31,18 @@ cp .env.example .env.local      # fill in Supabase URL + anon key (OpenAI key op
 npm run dev                     # http://localhost:3000
 ```
 
-## MVP feature map
+## How it works
 
 | Feature | Where |
 | --- | --- |
-| Stratigraphic Memory Intake (core event / retellings / current weight + emotion + tags) | `src/components/memory/memory-intake-form.tsx` → `createMemory` action → `create_memory()` RPC |
-| Artifact tagging (smell, sound, location, person, ...) | `src/components/memory/artifact-tag-picker.tsx`, `tags` + `memory_tags` |
-| Reconsolidation Timer (server-clock synced, 2-min grace, enforced in SQL) | `src/hooks/use-labile-window.ts`, `src/components/excavation/reconsolidation-timer.tsx`, `complete_excavation()` RPC |
-| Cognitive Friction / prediction-error prompt | `src/lib/ai/prediction-error.ts` (OpenAI Responses API, falls back to templates) |
-| Reframing Crucible (reflection → new append-only layer) | `src/components/excavation/excavation-session.tsx` |
-| Version Delta Visualizer (side-by-side word diff + emotional shift) | `src/components/delta/version-delta.tsx`, `src/lib/memory/delta.ts` |
-| Consolidation Strength Meter (stable / labile / contested) | `src/lib/memory/consolidation.ts`, `src/components/memory/consolidation-meter.tsx` |
-| Stratigraphic Timeline (recent at surface, older deeper) | `src/components/memory/strata-timeline.tsx` |
+| Home: date, dreaming bear, "New entry" / "Edit entry" (24h) bubbles, "Dive" | `src/app/page.tsx`, `src/components/dream/` |
+| New entry: "Rant to me about this event" + a clue for future you + intensity | `src/components/memory/memory-entry-form.tsx` → `create_memory()` |
+| Edit entry within 24h of writing | `src/app/dig/[id]/edit`, `update_recent_memory()` RPC + RLS policy |
+| Dig site: strata by time distance, each memory a fossil | `src/components/dig/fossil-strata.tsx`, `public/fossils/` |
+| Dive back in: recall from the clue only, with the earlier entry hidden | `src/app/dig/[id]/excavate/[sessionId]`, `src/components/excavation/` |
+| Nudge prompt (from title + clue only, so it can't leak the entry) | `src/lib/ai/prediction-error.ts` |
+| How it's changed: then vs now + intensity shift | `src/components/delta/version-delta.tsx` |
+| Consolidation meter (stable / labile / contested) | `src/lib/memory/consolidation.ts` |
 
 ## Folder structure
 

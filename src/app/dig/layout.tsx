@@ -10,7 +10,8 @@ export default async function DigLayout({ children }: { children: React.ReactNod
   return (
     <>
       <SiteHeader email={user.email} />
-      <main className="mx-auto max-w-5xl px-4 py-10">{children}</main>
+      {/* Pages own their width: the dig site is full-bleed, everything else is centred. */}
+      <main>{children}</main>
       <SiteFooter />
     </>
   );

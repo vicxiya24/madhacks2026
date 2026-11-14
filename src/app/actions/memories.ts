@@ -4,41 +4,33 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { memoryIntakeSchema, type MemoryIntakeField } from "@/lib/memory/schemas";
+import { memoryEntrySchema, type MemoryEntryField } from "@/lib/memory/schemas";
 import type { ActionState } from "@/types/memory";
-import type { Json } from "@/types/database";
 
-/** Stratigraphic Memory Intake: validates the form and buries the memory atomically. */
-export async function createMemory(
-  _prev: ActionState<MemoryIntakeField>,
-  formData: FormData,
-): Promise<ActionState<MemoryIntakeField>> {
-  const parsed = memoryIntakeSchema.safeParse(Object.fromEntries(formData));
+type EntryState = ActionState<MemoryEntryField>;
 
-  if (!parsed.success) {
-    return {
-      ok: false,
-      message: "A few fields need attention before we can bury this memory.",
-      fieldErrors: z.flattenError(parsed.error).fieldErrors as ActionState<MemoryIntakeField>["fieldErrors"],
-    };
-  }
+function invalid(error: z.ZodError): EntryState {
+  return {
+    ok: false,
+    message: "A couple of things need a look before we bury this.",
+    fieldErrors: z.flattenError(error).fieldErrors as EntryState["fieldErrors"],
+  };
+}
+
+/** New entry: one "rant" layer plus a clue for your future self. */
+export async function createMemory(_prev: EntryState, formData: FormData): Promise<EntryState> {
+  const parsed = memoryEntrySchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return invalid(parsed.error);
 
   const input = parsed.data;
-  const layers = [
-    { layer_type: "core_event", content: input.coreEvent },
-    input.retelling && { layer_type: "retelling", content: input.retelling },
-    input.currentWeight && { layer_type: "current_weight", content: input.currentWeight },
-  ].filter(Boolean) as Json;
-
   const supabase = await createClient();
   const { data: memoryId, error } = await supabase.rpc("create_memory", {
     p_title: input.title,
     p_occurred_on: input.occurredOn ?? null,
     p_era_label: input.eraLabel ?? null,
+    p_context_cue: input.contextCue,
+    p_content: input.content,
     p_emotional_weight: input.emotionalWeight,
-    p_emotional_valence: input.emotionalValence,
-    p_layers: layers,
-    p_tags: input.tags as unknown as Json,
   });
 
   if (error || !memoryId) {
@@ -52,14 +44,41 @@ export async function createMemory(
     };
   }
 
-  revalidatePath("/dig");
-  redirect(`/dig/${memoryId}`);
+  revalidatePath("/", "layout");
+  redirect(`/dig?buried=${memoryId}`);
 }
 
-export async function deleteMemory(memoryId: string) {
+/** Edit an entry within 24 hours of writing it. */
+export async function updateMemory(
+  memoryId: string,
+  _prev: EntryState,
+  formData: FormData,
+): Promise<EntryState> {
+  const parsed = memoryEntrySchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return invalid(parsed.error);
+
+  const input = parsed.data;
   const supabase = await createClient();
-  const { error } = await supabase.from("memories").delete().eq("id", memoryId);
-  if (error) throw new Error(`Failed to delete memory: ${error.message}`);
-  revalidatePath("/dig");
-  redirect("/dig");
+  const { error } = await supabase.rpc("update_recent_memory", {
+    p_memory_id: memoryId,
+    p_title: input.title,
+    p_occurred_on: input.occurredOn ?? null,
+    p_era_label: input.eraLabel ?? null,
+    p_context_cue: input.contextCue,
+    p_content: input.content,
+    p_emotional_weight: input.emotionalWeight,
+  });
+
+  if (error) {
+    console.error("[updateMemory]", error);
+    return {
+      ok: false,
+      message: error.message.includes("24 hour")
+        ? "The 24 hour edit window has closed. This memory is buried now."
+        : "We couldn't save your changes. Please try again.",
+    };
+  }
+
+  revalidatePath("/", "layout");
+  redirect(`/dig/${memoryId}`);
 }

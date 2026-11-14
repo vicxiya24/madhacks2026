@@ -41,6 +41,7 @@ export type Database = {
           title: string;
           occurred_on: string | null;
           era_label: string | null;
+          context_cue: string | null;
           emotional_weight: number;
           emotional_valence: number;
           excavation_count: number;
@@ -54,6 +55,7 @@ export type Database = {
           title: string;
           occurred_on?: string | null;
           era_label?: string | null;
+          context_cue?: string | null;
           emotional_weight?: number;
           emotional_valence?: number;
           excavation_count?: number;
@@ -67,6 +69,7 @@ export type Database = {
           title?: string;
           occurred_on?: string | null;
           era_label?: string | null;
+          context_cue?: string | null;
           emotional_weight?: number;
           emotional_valence?: number;
           excavation_count?: number;
@@ -245,12 +248,23 @@ export type Database = {
           p_title: string;
           p_occurred_on: string | null;
           p_era_label: string | null;
+          p_context_cue: string | null;
+          p_content: string;
           p_emotional_weight: number;
-          p_emotional_valence: number;
-          p_layers: Json;
-          p_tags?: Json;
         };
         Returns: string;
+      };
+      update_recent_memory: {
+        Args: {
+          p_memory_id: string;
+          p_title: string;
+          p_occurred_on: string | null;
+          p_era_label: string | null;
+          p_context_cue: string | null;
+          p_content: string;
+          p_emotional_weight: number;
+        };
+        Returns: undefined;
       };
       start_excavation: {
         Args: {

@@ -3,163 +3,124 @@
 import { useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { computeDelta, type DeltaSegment } from "@/lib/memory/delta";
+import { intensityWord } from "@/components/memory/intensity-field";
 import { LAYER_META } from "@/lib/memory/constants";
 import type { MemoryLayer } from "@/types/memory";
 import { cn, formatDateTime } from "@/lib/utils";
 
-function versionLabel(l: MemoryLayer) {
-  return `v${l.version} · ${LAYER_META[l.layer_type].label}`;
+function versionLabel(l: MemoryLayer, index: number) {
+  return index === 0 ? LAYER_META[l.layer_type].label : `${LAYER_META[l.layer_type].label} #${index}`;
 }
 
-function Segments({ segments }: { segments: DeltaSegment[] }) {
+/** Intensity bar from 1..10 with the word underneath. */
+function IntensityGauge({ value }: { value: number | null }) {
+  const v = value ?? 5;
   return (
-    <p className="text-sm leading-relaxed whitespace-pre-wrap">
-      {segments.map((s, i) =>
-        s.kind === "same" ? (
-          <span key={i}>{s.text}</span>
-        ) : s.kind === "removed" ? (
-          <del
+    <div className="grid gap-1.5">
+      <div className="flex gap-1" aria-hidden>
+        {Array.from({ length: 10 }, (_, i) => (
+          <span
             key={i}
-            className="bg-contested/15 text-contested decoration-contested/60 rounded-sm px-0.5"
-          >
-            {s.text}
-          </del>
-        ) : (
-          <ins key={i} className="bg-stable/15 text-stable rounded-sm px-0.5 no-underline">
-            {s.text}
-          </ins>
-        ),
-      )}
-    </p>
-  );
-}
-
-function Shift({ label, from, to }: { label: string; from: number | null; to: number | null }) {
-  if (from === null || to === null) return null;
-  const delta = to - from;
-  return (
-    <div className="bg-muted/60 rounded-lg px-4 py-3">
-      <div className="text-muted-foreground text-xs">{label}</div>
-      <div className="mt-1 flex items-center gap-2 font-mono text-sm tabular-nums">
-        {from} <ArrowRight className="size-3" aria-label="to" /> {to}
-        <span
-          className={cn(
-            "text-xs",
-            delta > 0 && "text-stable",
-            delta < 0 && "text-contested",
-            delta === 0 && "text-muted-foreground",
-          )}
-        >
-          ({delta > 0 ? `+${delta}` : delta})
-        </span>
+            className={cn("h-2 flex-1 rounded-full", i < v ? "bg-[#a0b9e6]" : "bg-white/10")}
+          />
+        ))}
       </div>
+      <span className="font-hand text-xl text-[#c9d6ff]">
+        {intensityWord(v)} <span className="font-mono text-xs opacity-70">{v}/10</span>
+      </span>
     </div>
   );
 }
 
 /**
- * Version Delta Visualizer: side-by-side word diff of any two strata.
- * Defaults to the original core event vs. the most recent deposit.
+ * Then vs. now: two tellings side by side with the intensity shift between
+ * them. No word-diffing. Each version is read as a whole.
  */
 export function VersionDelta({ layers }: { layers: MemoryLayer[] }) {
   const sorted = useMemo(() => [...layers].sort((a, b) => a.version - b.version), [layers]);
+  const labels = useMemo(() => {
+    let revisit = 0;
+    return new Map(
+      sorted.map((l) => [l.id, l.layer_type === "reframe" ? versionLabel(l, ++revisit) : versionLabel(l, 0)]),
+    );
+  }, [sorted]);
+
   const original = sorted.find((l) => l.layer_type === "core_event") ?? sorted[0];
   const latest = sorted.at(-1)!;
 
   const [fromId, setFromId] = useState(original.id);
   const [toId, setToId] = useState(latest.id);
-
   const from = sorted.find((l) => l.id === fromId) ?? original;
   const to = sorted.find((l) => l.id === toId) ?? latest;
-  const delta = useMemo(() => computeDelta(from.content, to.content), [from, to]);
+
+  const shift = (to.emotional_weight ?? 5) - (from.emotional_weight ?? 5);
 
   return (
     <div className="grid gap-6">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label htmlFor="delta-from">Earlier version</Label>
-          <select
-            id="delta-from"
-            value={from.id}
-            onChange={(e) => setFromId(e.target.value)}
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-          >
-            {sorted.map((l) => (
-              <option key={l.id} value={l.id} disabled={l.version >= to.version}>
-                {versionLabel(l)}
-              </option>
-            ))}
-          </select>
+      {sorted.length > 2 && (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[
+            { id: "delta-from", label: "Earlier", value: from.id, set: setFromId, disable: (l: MemoryLayer) => l.version >= to.version },
+            { id: "delta-to", label: "Later", value: to.id, set: setToId, disable: (l: MemoryLayer) => l.version <= from.version },
+          ].map((s) => (
+            <div key={s.id} className="grid gap-2">
+              <Label htmlFor={s.id}>{s.label}</Label>
+              <select
+                id={s.id}
+                value={s.value}
+                onChange={(e) => s.set(e.target.value)}
+                className="border-input h-10 rounded-xl border bg-white/5 px-3 text-sm"
+              >
+                {sorted.map((l) => (
+                  <option key={l.id} value={l.id} disabled={s.disable(l)} className="bg-popover">
+                    {labels.get(l.id)} · {formatDateTime(l.created_at)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="delta-to">Later version</Label>
-          <select
-            id="delta-to"
-            value={to.id}
-            onChange={(e) => setToId(e.target.value)}
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-          >
-            {sorted.map((l) => (
-              <option key={l.id} value={l.id} disabled={l.version <= from.version}>
-                {versionLabel(l)}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+      )}
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="bg-muted/60 rounded-lg px-4 py-3">
-          <div className="text-muted-foreground text-xs">Original retained</div>
-          <div className="mt-1 font-mono text-sm tabular-nums">{delta.stats.retentionPct}%</div>
+      <div className="grid items-center gap-4 rounded-3xl border bg-white/[0.03] px-6 py-5 sm:grid-cols-[1fr_auto_1fr]">
+        <IntensityGauge value={from.emotional_weight} />
+        <div className="grid justify-items-center gap-1 text-center">
+          <ArrowRight className="size-5 text-[#c9d6ff]" aria-hidden />
+          <span
+            className={cn(
+              "font-mono text-xs",
+              shift > 0 && "text-contested",
+              shift < 0 && "text-stable",
+              shift === 0 && "text-muted-foreground",
+            )}
+          >
+            {shift === 0 ? "same intensity" : shift > 0 ? `${shift} louder` : `${-shift} quieter`}
+          </span>
         </div>
-        <div className="bg-muted/60 rounded-lg px-4 py-3">
-          <div className="text-muted-foreground text-xs">Words added / removed</div>
-          <div className="mt-1 font-mono text-sm tabular-nums">
-            <span className="text-stable">+{delta.stats.addedWords}</span>{" "}
-            <span className="text-contested">-{delta.stats.removedWords}</span>
-          </div>
-        </div>
-        <Shift label="Intensity" from={from.emotional_weight} to={to.emotional_weight} />
-        <Shift label="Tone" from={from.emotional_valence} to={to.emotional_valence} />
+        <IntensityGauge value={to.emotional_weight} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         {[
-          { layer: from, segments: delta.before, heading: "Before" },
-          { layer: to, segments: delta.after, heading: "After" },
-        ].map(({ layer, segments, heading }) => (
+          { layer: from, heading: "Then" },
+          { layer: to, heading: "Now" },
+        ].map(({ layer, heading }) => (
           <section
             key={heading}
-            className="bg-card relative overflow-hidden rounded-xl border"
-            aria-label={`${heading}: ${versionLabel(layer)}`}
+            className="bg-card relative overflow-hidden rounded-3xl border"
+            aria-label={`${heading}: ${labels.get(layer.id)}`}
           >
-            <div
-              className={cn("absolute inset-x-0 top-0 h-1", LAYER_META[layer.layer_type].stratum)}
-              aria-hidden
-            />
-            <header className="flex flex-wrap items-baseline justify-between gap-2 border-b px-5 py-3">
-              <span className="text-sm font-medium">
-                {heading}: {versionLabel(layer)}
-              </span>
-              <span className="text-muted-foreground font-mono text-[11px]">
-                {formatDateTime(layer.created_at)}
+            <div className={cn("absolute inset-x-0 top-0 h-1.5", LAYER_META[layer.layer_type].stratum)} aria-hidden />
+            <header className="flex flex-wrap items-baseline justify-between gap-2 border-b px-6 py-4">
+              <span className="font-hand text-3xl font-bold">{heading}</span>
+              <span className="text-muted-foreground text-xs">
+                {labels.get(layer.id)} · {formatDateTime(layer.created_at)}
               </span>
             </header>
-            <div className="px-5 py-4">
-              <Segments segments={segments} />
-            </div>
+            <p className="px-6 py-5 text-sm leading-relaxed whitespace-pre-wrap">{layer.content}</p>
           </section>
         ))}
       </div>
-
-      <p className="text-muted-foreground text-xs">
-        <del className="bg-contested/15 text-contested rounded-sm px-1">Struck</del> words faded
-        from the narrative; <ins className="bg-stable/15 text-stable rounded-sm px-1 no-underline">highlighted</ins>{" "}
-        words are new sediment. Neither version is the &ldquo;true&rdquo; one. Both are
-        reconstructions.
-      </p>
     </div>
   );
 }

@@ -16,7 +16,7 @@ export default async function LoginPage({
       <SiteHeader />
       <main className="mx-auto grid max-w-md gap-6 px-4 py-16">
         <div>
-          <h1 className="font-serif text-3xl">Enter the dig site</h1>
+          <h1 className="font-hand text-5xl font-bold">Enter the dig site</h1>
           <p className="text-muted-foreground mt-2 text-sm">
             Your memories are private to your account and protected by row-level security.
           </p>

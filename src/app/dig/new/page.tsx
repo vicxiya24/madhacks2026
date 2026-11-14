@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { MemoryIntakeForm } from "@/components/memory/memory-intake-form";
+import { createMemory } from "@/app/actions/memories";
+import { MemoryEntryForm } from "@/components/memory/memory-entry-form";
+import { PageContainer } from "@/components/page-container";
 
-export const metadata: Metadata = { title: "Log a memory" };
+export const metadata: Metadata = { title: "New entry" };
 
-export default function NewMemoryPage() {
+export default function NewEntryPage() {
   return (
-    <div className="mx-auto grid max-w-3xl gap-8">
+    <PageContainer narrow className="grid gap-6">
       <div>
-        <h1 className="font-serif text-3xl">Stratigraphic intake</h1>
+        <h1 className="font-hand text-5xl font-bold">new entry</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Memories aren&apos;t single recordings. They&apos;re layers of the original experience,
-          every retelling, and how you feel now. Logging them separately is what lets you see
-          them shift.
+          Get it out of your head and into the ground. You can edit it for 24 hours.
         </p>
       </div>
-      <MemoryIntakeForm />
-    </div>
+      <MemoryEntryForm action={createMemory} submitLabel="Bury it" pendingLabel="Burying..." />
+    </PageContainer>
   );
 }
