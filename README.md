@@ -1,7 +1,7 @@
 # Archaive
 
 Treat memory like a dig site. Write a memory down, let it settle into the strata as a fossil,
-**dive back in** later and retell it from memory using only a clue you left yourself, then
+**dig back in** later and retell it from memory using only a clue you left yourself, then
 compare how your story has shifted.
 
 > Reflective journaling tool, not therapy or medical care.
@@ -47,16 +47,16 @@ npm run dev                     # http://localhost:3000
 
 | Feature | Where |
 | --- | --- |
-| Home: date, dreaming bear, "New entry" / "Edit entry" (24h) bubbles, "Dive" | `src/app/page.tsx`, `src/components/dream/` |
+| Home: date, dreaming bear, "New entry" / "Edit entry" (24h) bubbles, "Dig" | `src/app/page.tsx`, `src/components/dream/` |
 | New entry: "Rant to me about this event", vividness + feeling bear scales, people/places/objects/senses, a clue for future you | `src/components/memory/memory-entry-form.tsx` → `create_memory()` |
 | People in my life: add people, give each an animal avatar, search and tag them in entries | `src/app/people`, `src/components/people/`, `src/lib/people.ts` |
 | "Play it out": Gemini art-directs an animated artifact card starring your bear and your people (offline fallback without a key) | `src/components/animation/`, `src/app/actions/artifact.ts`, `src/lib/animation/` |
 | Character customisation (5 bears) used on home + rating scales | `src/app/settings`, `src/lib/bears.ts`, `src/components/bear/` |
-| Dive / surface transitions between home and the dig site | `src/components/dream/scene-transitions.tsx` |
+| Dig / surface transitions between home and the dig site | `src/components/dream/scene-transitions.tsx` |
 | Delete an entry | `src/components/memory/delete-memory-button.tsx` |
 | Edit entry within 24h of writing | `src/app/dig/[id]/edit`, `update_recent_memory()` RPC + RLS policy |
 | Dig site: strata by time distance (exact date, or a rough "a few weeks ago" style choice), each memory a fossil | `src/components/dig/fossil-strata.tsx`, `public/fossils/` |
-| Dive back in: recall from the clue only, with the earlier entry hidden; the session stays open until you save | `src/app/dig/[id]/excavate/[sessionId]`, `src/components/excavation/` |
+| Dig back in: recall from the clue only, with the earlier entry hidden; the session stays open until you save | `src/app/dig/[id]/excavate/[sessionId]`, `src/components/excavation/` |
 | Nudge prompt (from title + clue only, so it can't leak the entry) | `src/lib/ai/prediction-error.ts` |
 | How it's changed: then vs now + vividness and feeling shifts | `src/components/delta/version-delta.tsx` |
 | "How settled is it?" meter (settled / shifting / conflicted) with explainer | `src/lib/memory/consolidation.ts` |
@@ -93,7 +93,7 @@ src/
     delta/                           version delta
     dig/                             fossil strata and fossils
     dream/                           night sky, waves, thought bubbles, scene transitions
-    excavation/                      session view and start-dive button
+    excavation/                      session view and start-dig button
     face/                            bear face parts
     memory/                          entry form, cue picker, layer stack, consolidation meter
     people/                          people manager, picker, animal avatars
