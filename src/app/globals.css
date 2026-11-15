@@ -179,3 +179,73 @@ html[data-surfacing] .surface-scene { transform: translateY(70dvh); opacity: 0; 
   .animate-rise-in, .animate-float-in { animation: none; }
 }
 
+
+/* ---------- "Play it out" artifact cards ---------- */
+/* Strata bands scroll upward, like digging down through the layers. */
+@keyframes strata-scroll {
+  from { background-position: 0 0; }
+  to { background-position: 0 -480px; }
+}
+.animate-strata-scroll {
+  background: repeating-linear-gradient(
+    180deg,
+    var(--stratum-1) 0 96px,
+    var(--stratum-2) 96px 192px,
+    var(--stratum-3) 192px 288px,
+    var(--stratum-4) 288px 384px,
+    var(--stratum-5) 384px 480px
+  );
+  animation: strata-scroll 6s linear infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-bob { animation: bob 1.6s ease-in-out infinite; }
+
+/* The finished card fades up out of the dark, like a print in a developing tray. */
+@keyframes artifact-reveal {
+  0% { opacity: 0; transform: translateY(14px) scale(0.97); filter: sepia(1) blur(6px) brightness(0.6); }
+  60% { opacity: 1; filter: sepia(0.5) blur(1px) brightness(0.9); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+.animate-artifact-reveal { animation: artifact-reveal 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+/* A soft band of light sweeping across, as if a lamp passed over the plate. */
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-120%) skewX(-18deg); }
+  100% { transform: translateX(220%) skewX(-18deg); }
+}
+.artifact-shimmer { overflow: hidden; }
+.artifact-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: -10% auto -10% 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, rgb(255 248 230 / 0.28), transparent);
+  animation: shimmer-sweep 5s ease-in-out infinite;
+}
+.artifact-shimmer-fast::after { animation-duration: 1.8s; }
+
+/* Developing: a sepia wash pulses over the scrolling strata. */
+@keyframes develop-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.8; }
+}
+.artifact-developing {
+  background: radial-gradient(ellipse at center, rgb(120 84 40 / 0.35), rgb(40 25 10 / 0.85));
+  animation: develop-pulse 2.4s ease-in-out infinite;
+}
+.artifact-plate {
+  background: radial-gradient(ellipse at center, #2c2a4f, #15142c);
+}
+
+/* Film grain from an inline SVG noise filter. */
+.artifact-grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-strata-scroll, .animate-bob, .animate-artifact-reveal, .artifact-shimmer::after,
+  .artifact-developing { animation: none; }
+}

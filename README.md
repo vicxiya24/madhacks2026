@@ -24,6 +24,7 @@ cp .env.example .env.local      # fill in Supabase URL + anon key (OpenAI key op
 2. `supabase/migrations/20261115000000_dreamlike_redesign.sql`
 3. `supabase/migrations/20261116000000_bears_and_scales.sql`
 4. `supabase/migrations/20261117000000_people_avatars.sql`
+5. `supabase/migrations/20261118000000_memory_artifacts.sql`
 
 **Auth**: Email/password is enabled by default. For quick hackathon demos, you can turn off
 *Confirm email* under Authentication → Providers → Email. Otherwise, add
@@ -40,6 +41,7 @@ npm run dev                     # http://localhost:3000
 | Home: date, dreaming bear, "New entry" / "Edit entry" (24h) bubbles, "Dive" | `src/app/page.tsx`, `src/components/dream/` |
 | New entry: "Rant to me about this event", vividness + feeling bear scales, people/places/objects/senses, a clue for future you | `src/components/memory/memory-entry-form.tsx` → `create_memory()` |
 | People in my life: add people, give each an animal avatar, search and tag them in entries | `src/app/people`, `src/components/people/`, `src/lib/people.ts` |
+| "Play it out": a free Gemini text model art-directs an animated artifact card starring your bear and your people (offline fallback without a key) | `src/components/animation/`, `src/app/actions/artifact.ts`, `src/lib/animation/` |
 | Character customisation (5 bears) used on home + rating scales | `src/app/settings`, `src/lib/bears.ts`, `src/components/bear/` |
 | Dive / surface transitions between home and the dig site | `src/components/dream/scene-transitions.tsx` |
 | Delete an entry | `src/components/memory/delete-memory-button.tsx` |

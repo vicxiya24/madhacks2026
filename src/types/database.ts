@@ -256,6 +256,34 @@ export type Database = {
           },
         ];
       };
+      memory_artifacts: {
+        Row: {
+          id: string;
+          memory_id: string;
+          user_id: string;
+          artifact: Json;
+          source: "gemini" | "local";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          memory_id: string;
+          user_id?: string;
+          artifact: Json;
+          source: "gemini" | "local";
+          created_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "memory_artifacts_memory_id_fkey";
+            columns: ["memory_id"];
+            isOneToOne: false;
+            referencedRelation: "memories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           user_id: string;
