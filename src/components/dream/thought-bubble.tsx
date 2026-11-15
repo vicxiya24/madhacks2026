@@ -10,10 +10,12 @@ type Props = {
   className?: string;
   label?: string;
   size?: "lg" | "md" | "sm";
+  /** "short" keeps only the first trailing dot (when another bubble sits below, continuing the chain). */
+  tailLength?: "full" | "short";
 };
 
 /** Cloud-like thought bubble with trailing dots, as in the sketch. */
-export function ThoughtBubble({ href, children, tail, disabled, className, label, size = "md" }: Props) {
+export function ThoughtBubble({ href, children, tail, disabled, className, label, size = "md", tailLength = "full" }: Props) {
   const bubble = (
     <span
       className={cn(
@@ -36,11 +38,15 @@ export function ThoughtBubble({ href, children, tail, disabled, className, label
 
   const dots = tail === "down" ? (
     <span
-      className="pointer-events-none absolute -bottom-32 left-[82%] flex -translate-x-1/2 flex-col items-center gap-14"
+      className={cn(
+        "pointer-events-none absolute flex -translate-x-1/2 flex-col items-center gap-14",
+        // short: a single dot just below, leading into the bubble underneath
+        tailLength === "short" ? "-bottom-9 left-[62%]" : "-bottom-32 left-[82%]",
+      )}
       aria-hidden
     >
       <span className="size-6 rounded-full border-[3px] border-[#c9d6ff]" />
-      <span className="size-4 rounded-full border-[3px] border-[#c9d6ff] -translate-x-3" />
+      {tailLength === "full" && <span className="size-4 rounded-full border-[3px] border-[#c9d6ff] -translate-x-3" />}
     </span>
   ) : (
     <span

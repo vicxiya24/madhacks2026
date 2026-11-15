@@ -143,6 +143,12 @@
 
 .animate-twinkle { animation: twinkle 3.2s ease-in-out infinite; }
 .animate-drift { animation: drift 6s ease-in-out infinite; }
+/* "Let's reminisce" bubble when it has a suggestion: a slow, warm glow. */
+@keyframes reminisce-glow {
+  0%, 100% { box-shadow: 0 0 22px -6px rgb(246 211 139 / 0.55); }
+  50% { box-shadow: 0 0 44px 2px rgb(246 211 139 / 0.75); }
+}
+.animate-reminisce { animation: reminisce-glow 3.2s ease-in-out infinite; }
 .animate-breathe { animation: breathe 4.5s ease-in-out infinite; transform-origin: bottom center; }
 .animate-rise { animation: rise 9s linear infinite; }
 
@@ -246,6 +252,7 @@ html[data-surfacing] .surface-scene { transform: translateY(70dvh); opacity: 0; 
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-reminisce { animation: none; box-shadow: 0 0 30px -4px rgb(246 211 139 / 0.65); }
   .animate-strata-scroll, .animate-bob, .animate-artifact-reveal, .artifact-shimmer::after,
   .artifact-developing { animation: none; }
 }

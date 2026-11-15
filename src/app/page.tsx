@@ -10,15 +10,18 @@ import { getEditableMemory } from "@/lib/memory/queries";
 import { EDIT_WINDOW_HOURS } from "@/lib/memory/constants";
 import { getBearVariant } from "@/lib/profile";
 import { DEFAULT_BEAR } from "@/lib/bears";
+import { ReminisceBubble } from "@/components/dream/reminisce-bubble";
+import { getReminisceState } from "@/lib/reminisce-state";
 
 export default async function HomePage() {
   const user = await getCurrentUser().catch(() => null);
-  const [editable, variant] = user
+  const [editable, variant, reminisce] = user
     ? await Promise.all([
         getEditableMemory().catch(() => null),
         getBearVariant().catch(() => DEFAULT_BEAR),
+        getReminisceState(user.id).catch(() => null),
       ])
-    : [null, DEFAULT_BEAR];
+    : [null, DEFAULT_BEAR, null];
 
   const hoursLeft = editable
     ? Math.max(
@@ -47,6 +50,7 @@ export default async function HomePage() {
               <ThoughtBubble
                 href={gate("/dig/new")}
                 tail="down"
+                tailLength={reminisce ? "short" : "full"}
                 size="lg"
                 label="Write a new entry"
                 className="-translate-y-32 -translate-x-10 scale-125"
@@ -105,11 +109,22 @@ export default async function HomePage() {
                 customize avatar
               </a>
             )}
-            <BearSvg
-              variant={variant}
-              className="animate-breathe h-auto w-32 drop-shadow-[0_10px_30px_rgb(223_196_175_/_0.25)] sm:w-40"
-              title="Your bear, daydreaming"
-            />
+            <div className="relative">
+              {/* "Let's reminisce about..." rises from the bear's head, just under New entry.
+                  On phones it sits above the "customize avatar" pill; on wider screens that pill
+                  moves beside the bear, so the bubble can come down closer. */}
+              {reminisce && (
+                <ReminisceBubble
+                  state={reminisce}
+                  className="absolute bottom-full left-1/2 mb-[5.25rem] -translate-x-1/2 sm:mb-16"
+                />
+              )}
+              <BearSvg
+                variant={variant}
+                className="animate-breathe h-auto w-32 drop-shadow-[0_10px_30px_rgb(223_196_175_/_0.25)] sm:w-40"
+                title="Your bear, daydreaming"
+              />
+            </div>
           </div>
 
           <Waves className="z-0 h-56 sm:h-52">

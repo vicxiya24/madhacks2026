@@ -288,18 +288,21 @@ export type Database = {
         Row: {
           user_id: string;
           bear_variant: BearVariant;
+          reminisce_anchor_at: string | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           user_id?: string;
           bear_variant?: BearVariant;
+          reminisce_anchor_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           user_id?: string;
           bear_variant?: BearVariant;
+          reminisce_anchor_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
