@@ -92,9 +92,3 @@ src/
 
 Every table has RLS scoped to `auth.uid()`. Multi-step writes go through `security invoker` RPCs,
 so they're atomic and still subject to RLS.
-
-## Roadmap (not yet built)
-
-- External Contamination & Bias Detector (suggestibility markers in entries)
-- A richer, multi-step Reframing Crucible flow
-- Deeper timeline visualisation (scroll-driven depth chart)
