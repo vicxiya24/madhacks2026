@@ -39,7 +39,7 @@ export default async function HomePage() {
 
       <header className="relative z-10 px-6 pt-14 text-center sm:pt-6">
         <TodayDate className="font-hand text-5xl leading-none font-bold text-[#eef1ff] drop-shadow-[0_0_24px_rgb(160_185_230_/_0.45)] sm:text-7xl" />
-        <p className="font-hand mt-2 text-lg text-[#aab3dc] sm:text-xl">What&apos;s drifting through your mind tonight?</p>
+        <p className="font-hand mt-2 text-lg text-[#aab3dc] sm:text-xl">something on your mind?</p>
       </header>
 
       {/* The dream: two thought bubbles rising from the bear */}
@@ -79,7 +79,7 @@ export default async function HomePage() {
           <p className="font-hand mt-14 max-w-44 text-center text-sm leading-tight text-[#aab3dc] sm:mt-12 sm:ml-2 sm:text-base">
             {editable
               ? `"${editable.title}" · ${hoursLeft}h left`
-              : "You can edit an entry for a day after writing it"}
+              : "24 hours. then it's buried."}
           </p>
         </div>
       </section>

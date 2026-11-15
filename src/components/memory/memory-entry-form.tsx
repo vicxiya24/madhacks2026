@@ -70,8 +70,7 @@ export function MemoryEntryForm({
               Rant to me about this event.
             </Label>
             <p className="text-muted-foreground text-sm">
-              Don&apos;t tidy it up. What happened, who was there, what it felt like. Nobody
-              else will read this.
+              don&apos;t tidy it up. just what you remember.
             </p>
             <Textarea
               id="content"
@@ -142,8 +141,8 @@ export function MemoryEntryForm({
       </Card>
 
       <Card>
-        <CardContent className="grid gap-8">
-          <div className="grid gap-2">
+        <CardContent className="grid gap-10">
+          <div className="grid gap-1">
             <BearScale
               kind="vividness"
               name="vividness"
@@ -153,7 +152,7 @@ export function MemoryEntryForm({
             />
             <FieldError errors={errors.vividness} />
           </div>
-          <div className="grid gap-2">
+          <div className="grid gap-3">
             <BearScale
               kind="feeling"
               name="feeling"
@@ -171,7 +170,7 @@ export function MemoryEntryForm({
           <div className="grid gap-2">
             <h2 className="font-hand text-3xl font-bold">Who was there?</h2>
             <p className="text-muted-foreground text-sm">
-              Pick from the people in your life, or add someone new. Optional.
+              people who were there. or not.
             </p>
             <PeoplePicker people={people} defaultSelected={defaults.people} />
             <FieldError errors={errors.people} />
@@ -179,7 +178,7 @@ export function MemoryEntryForm({
           <div className="grid gap-2 border-t border-white/10 pt-6">
             <h2 className="font-hand text-3xl font-bold">What else was there?</h2>
             <p className="text-muted-foreground text-sm">
-              Places, objects, and the smells, sounds and textures that bring it back. Optional.
+              smells. objects. sounds. whatever sticks.
             </p>
             <CuePicker defaultCues={defaults.cues} />
             <FieldError errors={errors.tags} />
@@ -187,14 +186,13 @@ export function MemoryEntryForm({
         </CardContent>
       </Card>
 
-      <Card className="border-[#c9d6ff]/30">
+      <Card className="border-[#d4c9f0]/30">
         <CardContent className="grid gap-2">
           <Label htmlFor="contextCue" className="font-hand text-3xl font-bold">
             Leave a clue for future you.
           </Label>
           <p className="text-muted-foreground text-sm">
-            When you come back to dig this up, you <em>won&apos;t</em> see what you wrote above,
-            only this clue. Give just enough to find the memory, not enough to retell it.
+            you won&apos;t see any of that up there. just this. enough to find it, not retell it.
           </p>
           <Input
             id="contextCue"
@@ -217,7 +215,7 @@ export function MemoryEntryForm({
             <Link href={cancelHref}>Cancel</Link>
           </Button>
         )}
-        <SubmitButton size="lg" pending={isPending} pendingLabel={pendingLabel} className="rounded-full px-8">
+        <SubmitButton size="lg" pending={isPending} pendingLabel={pendingLabel} className="rounded-full pl-9 pr-7">
           {submitLabel}
         </SubmitButton>
       </div>

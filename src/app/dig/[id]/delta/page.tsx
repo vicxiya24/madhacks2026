@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/page-container";
 import { ClueCard } from "@/components/memory/clue-card";
@@ -33,9 +32,8 @@ export default async function DeltaPage({ params, searchParams }: Props) {
       {justRevisited && (
         <div
           role="status"
-          className="flex items-start gap-3 rounded-3xl border border-[#f6d38b]/30 bg-[#f6d38b]/10 px-6 py-4 text-sm"
+          className="rounded-3xl border border-[#f6d38b]/30 bg-[#f6d38b]/10 px-6 py-4 text-sm"
         >
-          <Sparkles className="mt-0.5 size-4 shrink-0 text-[#f6d38b]" aria-hidden />
           <p>
             You&apos;ve resurfaced. Here&apos;s what you remembered tonight next to what you
             first wrote.

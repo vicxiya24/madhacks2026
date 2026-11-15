@@ -54,7 +54,7 @@ export const memoryEntrySchema = z
       .or(z.literal(""))
       .optional()
       .transform((v) => (v ? v : undefined)),
-    content: z.string().trim().min(10, "Let it out. At least a sentence or two").max(20000),
+    content: z.string().trim().min(1, "Let it out. At least a sentence or two").max(20000),
     contextCue: z
       .string()
       .trim()
@@ -82,7 +82,7 @@ export type MemoryEntryInput = z.infer<typeof memoryEntrySchema>;
 export type MemoryEntryField = keyof z.input<typeof memoryEntrySchema>;
 
 export const reflectionSchema = z.object({
-  reflection: z.string().trim().min(20, "Write at least a couple of sentences").max(20000),
+  reflection: z.string().trim().min(1, "Write at least a couple of sentences").max(20000),
   vividness: scale("Pick the bear that matches how vivid it is now"),
   feeling: scale("Pick the bear that matches how it feels now"),
 });
