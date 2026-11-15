@@ -20,6 +20,12 @@ export function SettingsMenu({ email, className }: { email?: string | null; clas
             <Link href="/dig" className="block rounded-xl px-3 py-2 hover:bg-white/10">
               Your dig site
             </Link>
+            <Link href="/settings" className="block rounded-xl px-3 py-2 hover:bg-white/10">
+              Customize your bear
+            </Link>
+            <Link href="/settings?tab=account" className="block rounded-xl px-3 py-2 hover:bg-white/10">
+              Account
+            </Link>
             <form action={signOut}>
               <button type="submit" className="w-full rounded-xl px-3 py-2 text-left hover:bg-white/10">
                 Sign out

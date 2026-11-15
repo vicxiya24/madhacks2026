@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Gaegu, Geist, Geist_Mono } from "next/font/google";
+import { SceneArrival } from "@/components/dream/scene-transitions";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         className={`${geistSans.variable} ${geistMono.variable} ${gaegu.variable} min-h-dvh font-sans antialiased`}
       >
         {children}
+        <SceneArrival />
       </body>
     </html>
   );

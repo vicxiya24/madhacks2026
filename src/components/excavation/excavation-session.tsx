@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldError } from "@/components/ui/field-error";
 import { SubmitButton } from "@/components/submit-button";
-import { IntensityField } from "@/components/memory/intensity-field";
+import { BearScale } from "@/components/bear/bear-scale";
 import { usePreservingAction } from "@/hooks/use-preserving-action";
 import type { ReflectionField } from "@/lib/memory/schemas";
 import type { ActionState } from "@/types/memory";
@@ -25,12 +25,10 @@ export function ExcavationSessionView({
   memoryId,
   sessionId,
   nudge,
-  defaultIntensity,
 }: {
   memoryId: string;
   sessionId: string;
   nudge: string | null;
-  defaultIntensity: number;
 }) {
   const { state, onSubmit, isPending } = usePreservingAction(
     completeExcavation.bind(null, memoryId, sessionId),
@@ -100,7 +98,14 @@ export function ExcavationSessionView({
               <FieldError id="reflection-error" errors={errors.reflection} />
             </div>
 
-            <IntensityField defaultValue={defaultIntensity} label="How loud is it now?" />
+            <div className="grid gap-2">
+              <BearScale kind="vividness" name="vividness" question="How vivid is it now?" />
+              <FieldError errors={errors.vividness} />
+            </div>
+            <div className="grid gap-2">
+              <BearScale kind="feeling" name="feeling" question="How does it feel now?" />
+              <FieldError errors={errors.feeling} />
+            </div>
 
             <div className="flex flex-wrap items-center justify-between gap-3">
               <Button

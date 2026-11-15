@@ -39,7 +39,6 @@ export default async function DivePage({ params }: Props) {
         memoryId={memory.id}
         sessionId={session.id}
         nudge={session.prediction_error_prompt}
-        defaultIntensity={memory.emotional_weight}
       />
     </PageContainer>
   );

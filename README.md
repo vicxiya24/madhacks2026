@@ -22,6 +22,7 @@ cp .env.example .env.local      # fill in Supabase URL + anon key (OpenAI key op
 
 1. `supabase/migrations/20261114000000_init_memory_archaeologist.sql`
 2. `supabase/migrations/20261115000000_dreamlike_redesign.sql`
+3. `supabase/migrations/20261116000000_bears_and_scales.sql`
 
 **Auth**: Email/password is enabled by default. For quick hackathon demos, you can turn off
 *Confirm email* under Authentication → Providers → Email. Otherwise, add
@@ -36,13 +37,16 @@ npm run dev                     # http://localhost:3000
 | Feature | Where |
 | --- | --- |
 | Home: date, dreaming bear, "New entry" / "Edit entry" (24h) bubbles, "Dive" | `src/app/page.tsx`, `src/components/dream/` |
-| New entry: "Rant to me about this event" + a clue for future you + intensity | `src/components/memory/memory-entry-form.tsx` → `create_memory()` |
+| New entry: "Rant to me about this event", vividness + feeling bear scales, people/places/objects/senses, a clue for future you | `src/components/memory/memory-entry-form.tsx` → `create_memory()` |
+| Character customisation (5 bears) used on home + rating scales | `src/app/settings`, `src/lib/bears.ts`, `src/components/bear/` |
+| Dive / surface transitions between home and the dig site | `src/components/dream/scene-transitions.tsx` |
+| Delete an entry | `src/components/memory/delete-memory-button.tsx` |
 | Edit entry within 24h of writing | `src/app/dig/[id]/edit`, `update_recent_memory()` RPC + RLS policy |
 | Dig site: strata by time distance, each memory a fossil | `src/components/dig/fossil-strata.tsx`, `public/fossils/` |
 | Dive back in: recall from the clue only, with the earlier entry hidden | `src/app/dig/[id]/excavate/[sessionId]`, `src/components/excavation/` |
 | Nudge prompt (from title + clue only, so it can't leak the entry) | `src/lib/ai/prediction-error.ts` |
-| How it's changed: then vs now + intensity shift | `src/components/delta/version-delta.tsx` |
-| Consolidation meter (stable / labile / contested) | `src/lib/memory/consolidation.ts` |
+| How it's changed: then vs now + vividness and feeling shifts | `src/components/delta/version-delta.tsx` |
+| "How settled is it?" meter (settled / shifting / conflicted) with explainer | `src/lib/memory/consolidation.ts` |
 
 ## Folder structure
 

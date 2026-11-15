@@ -58,11 +58,11 @@ export async function completeExcavation(
   }
 
   const supabase = await createClient();
-  const { data: layerId, error } = await supabase.rpc("complete_excavation", {
+  const { data: layerId, error } = await supabase.rpc("complete_dive", {
     p_session_id: sessionId,
     p_reflection: parsed.data.reflection,
-    p_emotional_weight: parsed.data.emotionalWeight,
-    p_emotional_valence: 0,
+    p_vividness: parsed.data.vividness,
+    p_feeling: parsed.data.feeling,
   });
 
   if (error || !layerId) {

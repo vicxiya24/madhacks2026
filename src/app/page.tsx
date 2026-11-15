@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Bear } from "@/components/dream/bear";
+import { BearSvg } from "@/components/bear/bear-svg";
+import { DiveLink, FloatIn } from "@/components/dream/scene-transitions";
 import { NightSky } from "@/components/dream/night-sky";
 import { SettingsMenu } from "@/components/dream/settings-menu";
 import { ThoughtBubble } from "@/components/dream/thought-bubble";
@@ -8,10 +8,17 @@ import { Waves } from "@/components/dream/waves";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { getEditableMemory } from "@/lib/memory/queries";
 import { EDIT_WINDOW_HOURS } from "@/lib/memory/constants";
+import { getBearVariant } from "@/lib/profile";
+import { DEFAULT_BEAR } from "@/lib/bears";
 
 export default async function HomePage() {
   const user = await getCurrentUser().catch(() => null);
-  const editable = user ? await getEditableMemory().catch(() => null) : null;
+  const [editable, variant] = user
+    ? await Promise.all([
+        getEditableMemory().catch(() => null),
+        getBearVariant().catch(() => DEFAULT_BEAR),
+      ])
+    : [null, DEFAULT_BEAR];
 
   const hoursLeft = editable
     ? Math.max(
@@ -23,7 +30,8 @@ export default async function HomePage() {
   const gate = (path: string) => (user ? path : `/login?next=${encodeURIComponent(path)}`);
 
   return (
-    <main className="relative flex min-h-dvh flex-col overflow-hidden">
+    <main className="relative min-h-dvh overflow-hidden">
+      <FloatIn className="dive-scene relative flex min-h-dvh flex-col">
       <NightSky count={80} />
       <SettingsMenu email={user?.email} className="absolute top-4 right-4" />
 
@@ -68,20 +76,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div className="relative z-10 -mb-16 flex justify-center sm:-mb-20">
-        <Bear className="h-auto w-32 sm:w-40" />
+      <div className="dive-bear relative z-10 -mb-16 flex justify-center sm:-mb-20">
+        <BearSvg variant={variant} className="animate-breathe h-auto w-32 drop-shadow-[0_10px_30px_rgb(223_196_175_/_0.25)] sm:w-40" title="Your bear, daydreaming" />
       </div>
 
       <Waves className="z-0 h-56 sm:h-52">
         <div className="flex h-56 items-end justify-center pb-8 sm:h-52 sm:pb-8">
-          <Link
+          <DiveLink
             href={gate("/dig")}
-            className="font-hand rounded-[50%] border-[3px] border-[#e7eafb] bg-[#1d1f4a]/40 px-12 py-3 text-4xl font-bold text-[#eef1ff] shadow-[0_0_40px_-6px_rgb(201_224_247_/_0.6)] backdrop-blur-sm transition hover:scale-105 hover:bg-[#1d1f4a]/60 focus-visible:ring-4 focus-visible:ring-ring/60 focus-visible:outline-none"
+            className="font-hand rounded-[50%] border-[3px] border-[#e7eafb] bg-[#2b2d5e] px-12 py-3 text-4xl font-bold text-[#eef1ff] transition hover:scale-105 hover:bg-[#33366e] focus-visible:ring-4 focus-visible:ring-ring/60 focus-visible:outline-none"
           >
             Dive
-          </Link>
+          </DiveLink>
         </div>
       </Waves>
+      </FloatIn>
     </main>
   );
 }

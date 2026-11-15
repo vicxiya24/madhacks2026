@@ -107,7 +107,7 @@ export function FossilStrata({
                   {fossils.map((m) => {
                     const r = seededRandom(hashString(m.id));
                     const jitter = Math.round(r() * 40);
-                    const size = 64 + m.emotional_weight * 5; // louder memories, bigger fossils
+                    const size = 64 + (m.vividness ?? 3) * 9; // more vivid memories, bigger fossils
                     const when = formatDate(m.occurred_on) ?? m.era_label ?? "sometime";
                     const isNew = m.id === highlightId;
                     const digging = !!m.activeSession;

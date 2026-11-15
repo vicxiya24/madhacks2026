@@ -27,6 +27,7 @@ export type TagCategory =
   | "emotion"
   | "object";
 export type SessionStatus = "active" | "completed" | "expired" | "abandoned";
+export type BearVariant = "honey" | "cocoa" | "chocolate" | "panda" | "polar";
 
 export type Database = {
   __InternalSupabase: {
@@ -44,6 +45,8 @@ export type Database = {
           context_cue: string | null;
           emotional_weight: number;
           emotional_valence: number;
+          vividness: number | null;
+          feeling: number | null;
           excavation_count: number;
           last_excavated_at: string | null;
           created_at: string;
@@ -58,6 +61,8 @@ export type Database = {
           context_cue?: string | null;
           emotional_weight?: number;
           emotional_valence?: number;
+          vividness?: number | null;
+          feeling?: number | null;
           excavation_count?: number;
           last_excavated_at?: string | null;
           created_at?: string;
@@ -72,6 +77,8 @@ export type Database = {
           context_cue?: string | null;
           emotional_weight?: number;
           emotional_valence?: number;
+          vividness?: number | null;
+          feeling?: number | null;
           excavation_count?: number;
           last_excavated_at?: string | null;
           created_at?: string;
@@ -88,6 +95,8 @@ export type Database = {
           content: string;
           emotional_weight: number | null;
           emotional_valence: number | null;
+          vividness: number | null;
+          feeling: number | null;
           version: number;
           excavation_session_id: string | null;
           created_at: string;
@@ -100,6 +109,8 @@ export type Database = {
           content: string;
           emotional_weight?: number | null;
           emotional_valence?: number | null;
+          vividness?: number | null;
+          feeling?: number | null;
           version?: number;
           excavation_session_id?: string | null;
           created_at?: string;
@@ -112,6 +123,8 @@ export type Database = {
           content?: string;
           emotional_weight?: number | null;
           emotional_valence?: number | null;
+          vividness?: number | null;
+          feeling?: number | null;
           version?: number;
           excavation_session_id?: string | null;
           created_at?: string;
@@ -240,6 +253,27 @@ export type Database = {
           },
         ];
       };
+      profiles: {
+        Row: {
+          user_id: string;
+          bear_variant: BearVariant;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id?: string;
+          bear_variant?: BearVariant;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          bear_variant?: BearVariant;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {
@@ -250,7 +284,9 @@ export type Database = {
           p_era_label: string | null;
           p_context_cue: string | null;
           p_content: string;
-          p_emotional_weight: number;
+          p_vividness: number;
+          p_feeling: number;
+          p_tags?: Json;
         };
         Returns: string;
       };
@@ -262,9 +298,24 @@ export type Database = {
           p_era_label: string | null;
           p_context_cue: string | null;
           p_content: string;
-          p_emotional_weight: number;
+          p_vividness: number;
+          p_feeling: number;
+          p_tags?: Json;
         };
         Returns: undefined;
+      };
+      set_memory_tags: {
+        Args: { p_memory_id: string; p_tags: Json };
+        Returns: undefined;
+      };
+      complete_dive: {
+        Args: {
+          p_session_id: string;
+          p_reflection: string;
+          p_vividness: number;
+          p_feeling: number;
+        };
+        Returns: string;
       };
       start_excavation: {
         Args: {

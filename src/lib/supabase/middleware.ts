@@ -3,7 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 import type { Database } from "@/types/database";
 import { supabaseEnv } from "./env";
 
-const PROTECTED_PREFIXES = ["/dig"];
+const PROTECTED_PREFIXES = ["/dig", "/settings"];
 const AUTH_PAGES = ["/login"];
 
 /** Refreshes the Supabase session cookie and guards protected routes. */

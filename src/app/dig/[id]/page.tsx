@@ -9,6 +9,12 @@ import { PageContainer } from "@/components/page-container";
 import { FossilImage } from "@/components/dig/fossil";
 import { ClueCard } from "@/components/memory/clue-card";
 import { ConsolidationMeter } from "@/components/memory/consolidation-meter";
+import { SettledHeading } from "@/components/memory/settled-explainer";
+import { CueList } from "@/components/memory/cue-list";
+import { DeleteMemoryButton } from "@/components/memory/delete-memory-button";
+import { BearSvg } from "@/components/bear/bear-svg";
+import { scaleStep } from "@/lib/bears";
+import { getBearVariant } from "@/lib/profile";
 import { LayerStack } from "@/components/memory/layer-stack";
 import { StartDiveButton } from "@/components/excavation/start-dive-button";
 import { getMemory, isEditable } from "@/lib/memory/queries";
@@ -26,9 +32,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function FossilPage({ params }: Props) {
   await connection();
   const { id } = await params;
-  const memory = await getMemory(id);
+  const [memory, variant] = await Promise.all([getMemory(id), getBearVariant()]);
   if (!memory) notFound();
 
+  const vivid = scaleStep("vividness", memory.vividness);
+  const feeling = scaleStep("feeling", memory.feeling);
   const reading = readConsolidation(memory, memory.layers, memory.activeSession);
   const when = formatDate(memory.occurred_on) ?? memory.era_label ?? "sometime";
   const editable = isEditable(memory);
@@ -58,7 +66,10 @@ export default async function FossilPage({ params }: Props) {
         </div>
       </div>
 
-      <ClueCard clue={memory.context_cue} />
+      <div className="grid gap-3">
+        <ClueCard clue={memory.context_cue} />
+        <CueList cues={memory.tags} />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="grid content-start gap-4">
@@ -102,7 +113,7 @@ export default async function FossilPage({ params }: Props) {
         <aside className="grid content-start gap-4">
           <Card>
             <CardContent className="grid gap-3">
-              <h2 className="text-sm font-medium">How settled is it?</h2>
+              <SettledHeading />
               <ConsolidationMeter reading={reading} />
             </CardContent>
           </Card>
@@ -115,6 +126,30 @@ export default async function FossilPage({ params }: Props) {
             </Button>
           )}
 
+          {(vivid || feeling) && (
+            <Card>
+              <CardContent className="grid gap-3">
+                <h2 className="text-sm font-medium">Last time you checked</h2>
+                <div className="grid grid-cols-2 gap-2 text-center">
+                  {[
+                    { step: vivid, caption: "vividness" },
+                    { step: feeling, caption: "feeling" },
+                  ].map(({ step, caption }) =>
+                    step ? (
+                      <div key={caption} className="grid justify-items-center gap-1">
+                        <BearSvg variant={variant} expression={step.expression} mode="head" className="h-auto w-16" title={step.label} />
+                        <span className="font-hand text-lg leading-none font-bold">{step.label}</span>
+                        <span className="text-muted-foreground text-[11px]">{caption}</span>
+                      </div>
+                    ) : (
+                      <div key={caption} />
+                    ),
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {editable && (
             <Button asChild variant="ghost" className="rounded-full">
               <Link href={`/dig/${memory.id}/edit`}>
@@ -122,6 +157,7 @@ export default async function FossilPage({ params }: Props) {
               </Link>
             </Button>
           )}
+          <DeleteMemoryButton memoryId={memory.id} title={memory.title} />
         </aside>
       </div>
     </PageContainer>

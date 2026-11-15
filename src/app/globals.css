@@ -149,3 +149,59 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-twinkle, .animate-drift, .animate-breathe, .animate-rise { animation: none; }
 }
+
+/* ---------- dive / surface transitions ---------- */
+.strata-gradient {
+  background: linear-gradient(
+    180deg,
+    var(--stratum-1) 0%,
+    var(--stratum-2) 25%,
+    var(--stratum-3) 50%,
+    var(--stratum-4) 75%,
+    var(--stratum-5) 100%
+  );
+}
+
+/* Home: the scene sweeps up while strata rise from below, so it reads as sinking. */
+.dive-scene,
+.dive-bear,
+.dive-curtain,
+.surface-scene {
+  transition: transform 1s cubic-bezier(0.7, 0, 0.3, 1), opacity 1s ease;
+}
+.dive-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  transform: translateY(100%);
+}
+html[data-diving] .dive-scene { transform: translateY(-60dvh); }
+html[data-diving] .dive-bear { transform: translateY(45dvh) scale(0.8); }
+html[data-diving] .dive-curtain { transform: translateY(0); }
+
+/* Dig site: the curtain keeps travelling up and out of view on arrival. */
+@keyframes curtain-out {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100%); }
+}
+.curtain-out {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  animation: curtain-out 0.9s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+
+/* Surfacing: the dig site drops away, then home floats down into place. */
+html[data-surfacing] .surface-scene { transform: translateY(70dvh); opacity: 0; }
+@keyframes float-in {
+  from { transform: translateY(-40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-float-in { animation: float-in 0.8s cubic-bezier(0.3, 0, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dive-scene, .dive-bear, .dive-curtain, .surface-scene { transition: none; }
+  .curtain-out, .animate-float-in { animation: none; display: none; }
+}

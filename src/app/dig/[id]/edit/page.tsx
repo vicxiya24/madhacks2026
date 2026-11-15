@@ -41,7 +41,11 @@ export default async function EditEntryPage({ params }: { params: Promise<{ id: 
           eraLabel: memory.era_label,
           content: first?.content,
           contextCue: memory.context_cue,
-          emotionalWeight: first?.emotional_weight ?? memory.emotional_weight,
+          vividness: first?.vividness ?? memory.vividness,
+          feeling: first?.feeling ?? memory.feeling,
+          cues: memory.tags
+            .filter((t) => t.category !== "emotion")
+            .map((t) => ({ category: t.category, label: t.label })),
         }}
       />
     </PageContainer>

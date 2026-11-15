@@ -1,6 +1,6 @@
-import type { LayerType, SessionStatus, TagCategory, Tables } from "./database";
+import type { BearVariant, LayerType, SessionStatus, TagCategory, Tables } from "./database";
 
-export type { LayerType, SessionStatus, TagCategory };
+export type { BearVariant, LayerType, SessionStatus, TagCategory };
 
 export type Memory = Tables<"memories">;
 export type MemoryLayer = Tables<"memory_layers">;
@@ -17,6 +17,8 @@ export type MemoryWithStrata = Memory & {
 };
 
 export type ConsolidationState = "stable" | "labile" | "contested";
+
+export type Profile = Tables<"profiles">;
 
 export type ConsolidationReading = {
   state: ConsolidationState;

@@ -5,6 +5,7 @@ import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/page-container";
 import { ClueCard } from "@/components/memory/clue-card";
+import { CueList } from "@/components/memory/cue-list";
 import { VersionDelta } from "@/components/delta/version-delta";
 import { getMemory } from "@/lib/memory/queries";
 
@@ -42,7 +43,10 @@ export default async function DeltaPage({ params, searchParams }: Props) {
         </div>
       )}
 
-      <ClueCard clue={memory.context_cue} />
+      <div className="grid gap-3">
+        <ClueCard clue={memory.context_cue} />
+        <CueList cues={memory.tags} />
+      </div>
 
       {memory.layers.length < 2 ? (
         <div className="grid place-items-center gap-3 rounded-3xl border border-dashed px-6 py-16 text-center">

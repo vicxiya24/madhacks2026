@@ -1,17 +1,35 @@
-import { Activity, Lock, Swords } from "lucide-react";
+import { Anchor, Waves, Zap } from "lucide-react";
 import type { ConsolidationReading, ConsolidationState } from "@/types/memory";
 import { cn } from "@/lib/utils";
 
-const STATE_META: Record<
+export const SETTLED_LABELS: Record<
   ConsolidationState,
-  { label: string; bar: string; text: string; Icon: typeof Lock }
+  { label: string; blurb: string; bar: string; text: string; Icon: typeof Anchor }
 > = {
-  stable: { label: "Stable", bar: "bg-stable", text: "text-stable", Icon: Lock },
-  labile: { label: "Labile", bar: "bg-labile", text: "text-labile", Icon: Activity },
-  contested: { label: "Contested", bar: "bg-contested", text: "text-contested", Icon: Swords },
+  stable: {
+    label: "Settled",
+    blurb: "Resting quietly. Your story about it isn't changing much.",
+    bar: "bg-stable",
+    text: "text-stable",
+    Icon: Anchor,
+  },
+  labile: {
+    label: "Shifting",
+    blurb: "You're revisiting it right now, so it's open to change.",
+    bar: "bg-labile",
+    text: "text-labile",
+    Icon: Waves,
+  },
+  contested: {
+    label: "Conflicted",
+    blurb: "Your newer telling is quite different from your first one.",
+    bar: "bg-contested",
+    text: "text-contested",
+    Icon: Zap,
+  },
 };
 
-/** Consolidation Strength Meter: is this trace stable, labile, or contested? */
+/** How settled is this memory? (stable / shifting / conflicted) */
 export function ConsolidationMeter({
   reading,
   compact = false,
@@ -21,26 +39,26 @@ export function ConsolidationMeter({
   compact?: boolean;
   className?: string;
 }) {
-  const meta = STATE_META[reading.state];
+  const meta = SETTLED_LABELS[reading.state];
   const { Icon } = meta;
 
   return (
     <div className={cn("grid gap-1.5", className)}>
-      <div className="flex items-center justify-between gap-3 text-xs">
-        <span className={cn("inline-flex items-center gap-1 font-medium", meta.text)}>
-          <Icon className="size-3.5" aria-hidden />
+      <div className="flex items-center justify-between gap-3 text-sm">
+        <span className={cn("inline-flex items-center gap-1.5 font-medium", meta.text)}>
+          <Icon className="size-4" aria-hidden />
           {meta.label}
         </span>
-        <span className="text-muted-foreground font-mono tabular-nums">{reading.strength}%</span>
+        <span className="text-muted-foreground font-mono text-xs tabular-nums">{reading.strength}%</span>
       </div>
       <div
-        className="bg-muted h-1.5 overflow-hidden rounded-full"
+        className="h-2 overflow-hidden rounded-full bg-white/10"
         role="meter"
-        aria-label="Consolidation strength"
+        aria-label="How settled the memory is"
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={reading.strength}
-        aria-valuetext={`${meta.label}, ${reading.strength}% consolidated`}
+        aria-valuetext={`${meta.label}, ${reading.strength}% settled`}
       >
         <div
           className={cn("h-full rounded-full transition-[width] duration-700", meta.bar)}

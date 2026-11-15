@@ -3,40 +3,76 @@
 import { useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { intensityWord } from "@/components/memory/intensity-field";
+import { BearSvg } from "@/components/bear/bear-svg";
+import { useCharacter } from "@/components/bear/character-provider";
+import { scaleStep, type ScaleKind } from "@/lib/bears";
 import { LAYER_META } from "@/lib/memory/constants";
-import type { MemoryLayer } from "@/types/memory";
+import type { BearVariant, MemoryLayer } from "@/types/memory";
 import { cn, formatDateTime } from "@/lib/utils";
 
 function versionLabel(l: MemoryLayer, index: number) {
   return index === 0 ? LAYER_META[l.layer_type].label : `${LAYER_META[l.layer_type].label} #${index}`;
 }
 
-/** Intensity bar from 1..10 with the word underneath. */
-function IntensityGauge({ value }: { value: number | null }) {
-  const v = value ?? 5;
-  return (
-    <div className="grid gap-1.5">
-      <div className="flex gap-1" aria-hidden>
-        {Array.from({ length: 10 }, (_, i) => (
-          <span
-            key={i}
-            className={cn("h-2 flex-1 rounded-full", i < v ? "bg-[#a0b9e6]" : "bg-white/10")}
-          />
-        ))}
+function ScaleFace({ kind, value, variant }: { kind: ScaleKind; value: number | null; variant: BearVariant }) {
+  const step = scaleStep(kind, value);
+  if (!step) {
+    return (
+      <div className="grid justify-items-center gap-1 text-center">
+        <div className="grid size-16 place-items-center rounded-full border border-dashed border-white/20 text-xs text-white/40">
+          ?
+        </div>
+        <span className="text-muted-foreground text-xs">not recorded</span>
       </div>
-      <span className="font-hand text-xl text-[#c9d6ff]">
-        {intensityWord(v)} <span className="font-mono text-xs opacity-70">{v}/10</span>
-      </span>
+    );
+  }
+  return (
+    <div className="grid justify-items-center gap-1 text-center">
+      <BearSvg variant={variant} expression={step.expression} mode="head" className="h-auto w-16" title={step.label} />
+      <span className="font-hand text-lg leading-none font-bold">{step.label}</span>
+    </div>
+  );
+}
+
+function ShiftRow({
+  kind,
+  title,
+  from,
+  to,
+  variant,
+  describe,
+}: {
+  kind: ScaleKind;
+  title: string;
+  from: number | null;
+  to: number | null;
+  variant: BearVariant;
+  describe: (delta: number) => string;
+}) {
+  const delta = from && to ? to - from : null;
+  return (
+    <div className="grid gap-3 rounded-3xl border bg-white/[0.03] px-5 py-4">
+      <h3 className="text-muted-foreground text-xs font-medium tracking-widest uppercase">{title}</h3>
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+        <ScaleFace kind={kind} value={from} variant={variant} />
+        <div className="grid justify-items-center gap-1 text-center">
+          <ArrowRight className="size-5 text-[#c9d6ff]" aria-hidden />
+          {delta !== null && (
+            <span className="text-muted-foreground max-w-24 text-[11px] leading-tight">{describe(delta)}</span>
+          )}
+        </div>
+        <ScaleFace kind={kind} value={to} variant={variant} />
+      </div>
     </div>
   );
 }
 
 /**
- * Then vs. now: two tellings side by side with the intensity shift between
- * them. No word-diffing. Each version is read as a whole.
+ * Then vs. now: two tellings side by side, with how vivid the memory is and
+ * how it feels shown as bear faces so the change is visible at a glance.
  */
 export function VersionDelta({ layers }: { layers: MemoryLayer[] }) {
+  const variant = useCharacter();
   const sorted = useMemo(() => [...layers].sort((a, b) => a.version - b.version), [layers]);
   const labels = useMemo(() => {
     let revisit = 0;
@@ -52,8 +88,6 @@ export function VersionDelta({ layers }: { layers: MemoryLayer[] }) {
   const [toId, setToId] = useState(latest.id);
   const from = sorted.find((l) => l.id === fromId) ?? original;
   const to = sorted.find((l) => l.id === toId) ?? latest;
-
-  const shift = (to.emotional_weight ?? 5) - (from.emotional_weight ?? 5);
 
   return (
     <div className="grid gap-6">
@@ -82,22 +116,23 @@ export function VersionDelta({ layers }: { layers: MemoryLayer[] }) {
         </div>
       )}
 
-      <div className="grid items-center gap-4 rounded-3xl border bg-white/[0.03] px-6 py-5 sm:grid-cols-[1fr_auto_1fr]">
-        <IntensityGauge value={from.emotional_weight} />
-        <div className="grid justify-items-center gap-1 text-center">
-          <ArrowRight className="size-5 text-[#c9d6ff]" aria-hidden />
-          <span
-            className={cn(
-              "font-mono text-xs",
-              shift > 0 && "text-contested",
-              shift < 0 && "text-stable",
-              shift === 0 && "text-muted-foreground",
-            )}
-          >
-            {shift === 0 ? "same intensity" : shift > 0 ? `${shift} louder` : `${-shift} quieter`}
-          </span>
-        </div>
-        <IntensityGauge value={to.emotional_weight} />
+      <div className="grid gap-4 md:grid-cols-2">
+        <ShiftRow
+          kind="vividness"
+          title="How vivid"
+          from={from.vividness}
+          to={to.vividness}
+          variant={variant}
+          describe={(d) => (d === 0 ? "just as vivid" : d > 0 ? "clearer now" : "fading")}
+        />
+        <ShiftRow
+          kind="feeling"
+          title="How it feels"
+          from={from.feeling}
+          to={to.feeling}
+          variant={variant}
+          describe={(d) => (d === 0 ? "feels the same" : d > 0 ? "warmer now" : "heavier now")}
+        />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

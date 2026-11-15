@@ -28,7 +28,7 @@ export function lexicalOverlap(a: string, b: string): number {
  *
  * - labile:    a revisit is in progress right now
  * - contested: the latest revisit has drifted far from the first telling
- *              (intensity swing and/or very different wording)
+ *              (big change in feeling and/or very different wording)
  * - stable:    otherwise; strength dips while a recent revisit settles
  */
 export function readConsolidation(
@@ -57,13 +57,15 @@ export function readConsolidation(
     : "Untouched since you first wrote it down.";
 
   if (first && latest) {
-    const intensityShift = Math.abs((latest.emotional_weight ?? 5) - (first.emotional_weight ?? 5));
+    // feeling is 1 (painful) .. 5 (warm); missing on entries from older versions
+    const feelingShift =
+      first.feeling && latest.feeling ? Math.abs(latest.feeling - first.feeling) : 0;
     const overlap = lexicalOverlap(first.content, latest.content);
-    const drift = clamp(intensityShift / 9, 0, 1) * 0.5 + (1 - overlap) * 0.5;
+    const drift = clamp(feelingShift / 4, 0, 1) * 0.5 + (1 - overlap) * 0.5;
 
     strength -= Math.round(drift * 45);
 
-    if (intensityShift >= 4 || (drift > 0.65 && revisits.length < 2)) {
+    if (feelingShift >= 2 || (drift > 0.65 && revisits.length < 2)) {
       state = "contested";
       rationale = "Your latest revisit pulls hard against the first telling. It's still settling.";
     }

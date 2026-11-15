@@ -6,6 +6,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { memoryEntrySchema, type MemoryEntryField } from "@/lib/memory/schemas";
 import type { ActionState } from "@/types/memory";
+import type { Json } from "@/types/database";
 
 type EntryState = ActionState<MemoryEntryField>;
 
@@ -30,7 +31,9 @@ export async function createMemory(_prev: EntryState, formData: FormData): Promi
     p_era_label: input.eraLabel ?? null,
     p_context_cue: input.contextCue,
     p_content: input.content,
-    p_emotional_weight: input.emotionalWeight,
+    p_vividness: input.vividness,
+    p_feeling: input.feeling,
+    p_tags: input.tags as unknown as Json,
   });
 
   if (error || !memoryId) {
@@ -66,7 +69,9 @@ export async function updateMemory(
     p_era_label: input.eraLabel ?? null,
     p_context_cue: input.contextCue,
     p_content: input.content,
-    p_emotional_weight: input.emotionalWeight,
+    p_vividness: input.vividness,
+    p_feeling: input.feeling,
+    p_tags: input.tags as unknown as Json,
   });
 
   if (error) {
@@ -81,4 +86,21 @@ export async function updateMemory(
 
   revalidatePath("/", "layout");
   redirect(`/dig/${memoryId}`);
+}
+
+/** Permanently delete an entry and everything layered on it. */
+export async function deleteMemory(memoryId: string): Promise<ActionState> {
+  const supabase = await createClient();
+  const { error, count } = await supabase
+    .from("memories")
+    .delete({ count: "exact" })
+    .eq("id", memoryId);
+
+  if (error || count === 0) {
+    console.error("[deleteMemory]", error);
+    return { ok: false, message: "Couldn't delete this entry. Please try again." };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dig");
 }
