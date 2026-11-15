@@ -42,7 +42,7 @@ export default async function HomePage() {
             <p className="font-hand mt-2 text-lg text-[#aab3dc] sm:text-xl">something on your mind?</p>
           </header>
 
-          <section className="relative z-10 mx-auto mt-6 grid w-full max-w-2xl flex-1 grid-cols-2 items-end gap-2 px-3 sm:mt-6 sm:max-w-4xl sm:grid-cols-[3fr_2fr] sm:gap-4 sm:px-4">
+          <section className="relative z-20 mx-auto mt-6 grid w-full max-w-2xl flex-1 grid-cols-2 items-end gap-2 px-3 sm:mt-6 sm:max-w-4xl sm:grid-cols-[3fr_2fr] sm:gap-4 sm:px-4">
             <div className="flex flex-col items-center gap-10 sm:flex-row-reverse sm:items-end sm:justify-start sm:gap-6">
               <ThoughtBubble
                 href={gate("/dig/new")}
