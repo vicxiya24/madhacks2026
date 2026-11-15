@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { listMemories } from "@/lib/memory/queries";
 import { readConsolidation } from "@/lib/memory/consolidation";
 import { lexicalOverlap } from "@/lib/memory/consolidation";
 import { MemoryGraph } from "@/components/map/memory-graph";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "Memory map" };
 
