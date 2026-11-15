@@ -41,11 +41,19 @@ export default async function DigSitePage({
                 : "The deeper the layer, the further back the memory. Tap a fossil to revisit it."}
           </p>
         </div>
-        <Button asChild className="rounded-full">
-          <Link href="/dig/new">
-            <Plus aria-hidden /> New entry
+        <div className="flex gap-2">
+          <Link
+            href="/map"
+            className="font-hand inline-flex items-center rounded-full border border-[#c9d6ff]/30 px-4 py-2 text-sm text-[#c9d6ff]/80 transition hover:border-[#c9d6ff]/60 hover:text-[#c9d6ff]"
+          >
+            memory map
           </Link>
-        </Button>
+          <Button asChild className="rounded-full">
+            <Link href="/dig/new">
+              <Plus aria-hidden /> New entry
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <FossilStrata memories={memories} now={Date.now()} highlightId={buried} />
