@@ -8,7 +8,7 @@ export function SiteHeader({ email }: { email?: string | null }) {
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
         <Link href="/" className="font-hand flex items-center gap-2 text-2xl font-bold text-[#eef1ff]">
           <Moon className="size-5 fill-[#f3ead2] text-[#f3ead2]" aria-hidden />
-          Memory Archaeologist
+          Archaive
         </Link>
         <nav className="flex items-center gap-1 text-sm">
           {email && (
@@ -34,7 +34,7 @@ export function SiteHeader({ email }: { email?: string | null }) {
 export function SiteFooter() {
   return (
     <footer className="text-muted-foreground mx-auto max-w-5xl px-4 py-10 text-xs">
-      Memory Archaeologist is a reflective journaling tool, not therapy or medical care. If a
+      Archaive is a reflective journaling tool, not therapy or medical care. If a
       memory feels overwhelming, pause and reach out to a mental-health professional or a crisis
       line in your area.
     </footer>
