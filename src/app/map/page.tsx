@@ -5,6 +5,7 @@ import { listMemories } from "@/lib/memory/queries";
 import { readConsolidation } from "@/lib/memory/consolidation";
 import { lexicalOverlap } from "@/lib/memory/consolidation";
 import { MemoryGraph } from "@/components/map/memory-graph";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "Memory map" };
 
@@ -52,12 +53,12 @@ export default async function MapPage() {
       <div className="absolute inset-0">
         <MemoryGraph nodes={nodes} edges={edges} />
       </div>
-      <a
+      <Link
         href="/dig"
         className="font-hand absolute top-5 right-5 z-50 rounded-full border border-[#c9d6ff]/30 bg-[#0d0e1f]/60 backdrop-blur-sm px-4 py-1.5 text-sm text-[#c9d6ff]/80 transition hover:border-[#c9d6ff]/60 hover:text-[#c9d6ff]"
       >
         ← dig site
-      </a>
+      </Link>
     </main>
   );
 }
