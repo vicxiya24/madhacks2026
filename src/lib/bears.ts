@@ -99,10 +99,13 @@ export function isBearVariant(value: unknown): value is BearVariant {
 // ---------------------------------------------------------------------------
 // Expressions
 // ---------------------------------------------------------------------------
+import type { EyeKind, ExtraKind, MouthKind } from "@/components/face/face-parts";
+
+/** A face for any character (bear or animal). */
 export type BearExpression = {
-  eyes: "dot" | "closed" | "happy" | "sleepy" | "wide" | "sparkle" | "sad";
-  mouth: "flat" | "smile" | "grin" | "frown" | "wobble" | "o" | "none";
-  extra?: "tears" | "tear" | "fog" | "sparkles";
+  eyes: EyeKind;
+  mouth: MouthKind;
+  extra?: ExtraKind;
 };
 
 export const NEUTRAL: BearExpression = { eyes: "dot", mouth: "none" };

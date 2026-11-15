@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sparkles } from "lucide-react";
 import { abandonExcavation, completeExcavation } from "@/app/actions/excavation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,8 +57,7 @@ export function ExcavationSessionView({
   return (
     <div className="grid gap-6">
       {nudge && (
-        <p className="flex gap-3 rounded-3xl bg-white/[0.04] px-6 py-4 text-[#dfe6ff]">
-          <Sparkles className="mt-1 size-4 shrink-0 text-[#f6d38b]" aria-hidden />
+        <p className="rounded-3xl bg-white/[0.04] px-6 py-4 text-[#dfe6ff]">
           <span className="font-hand text-2xl leading-snug">{nudge}</span>
         </p>
       )}

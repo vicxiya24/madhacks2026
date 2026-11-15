@@ -18,6 +18,10 @@ import { getBearVariant } from "@/lib/profile";
 import { LayerStack } from "@/components/memory/layer-stack";
 import { StartDiveButton } from "@/components/excavation/start-dive-button";
 import { getMemory, isEditable } from "@/lib/memory/queries";
+import { MemoryAnimator } from "@/components/animation/MemoryAnimator";
+import { buildCast } from "@/lib/animation/cast";
+import { getLatestArtifact } from "@/lib/animation/queries";
+import { isGeminiConfigured } from "@/lib/animation/gemini-artifact";
 import { readConsolidation } from "@/lib/memory/consolidation";
 import { EDIT_WINDOW_HOURS } from "@/lib/memory/constants";
 import { formatDate } from "@/lib/utils";
@@ -34,6 +38,8 @@ export default async function FossilPage({ params }: Props) {
   const { id } = await params;
   const [memory, variant] = await Promise.all([getMemory(id), getBearVariant()]);
   if (!memory) notFound();
+  const artifact = await getLatestArtifact(memory.id);
+  const cast = buildCast(variant, memory.tags);
 
   const vivid = scaleStep("vividness", memory.vividness);
   const feeling = scaleStep("feeling", memory.feeling);
@@ -120,6 +126,8 @@ export default async function FossilPage({ params }: Props) {
           </CardContent>
         </Card>
       </div>
+
+      <MemoryAnimator memoryId={memory.id} cast={cast} initial={artifact} aiEnabled={isGeminiConfigured()} />
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>

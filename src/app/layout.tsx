@@ -9,8 +9,8 @@ const gaegu = Gaegu({ variable: "--font-gaegu", subsets: ["latin"], weight: ["40
 
 export const metadata: Metadata = {
   title: {
-    default: "Memory Archaeologist",
-    template: "%s · Memory Archaeologist",
+    default: "Archaive",
+    template: "%s · Archaive",
   },
   description:
     "A dreamy night-time journal for diving into old memories and seeing how they change.",
