@@ -27,7 +27,7 @@ export default async function DeltaPage({ params, searchParams }: Props) {
         <Link href={`/dig/${memory.id}`} className="text-muted-foreground hover:text-foreground text-sm">
           &larr; {memory.title}
         </Link>
-        <h1 className="font-hand mt-2 text-5xl font-bold">how it&apos;s changed</h1>
+        <h1 className="font-hand mt-2 text-5xl font-bold">How it&apos;s changed</h1>
       </div>
 
       {justRevisited && (
@@ -50,7 +50,7 @@ export default async function DeltaPage({ params, searchParams }: Props) {
 
       {memory.layers.length < 2 ? (
         <div className="grid place-items-center gap-3 rounded-3xl border border-dashed px-6 py-16 text-center">
-          <p className="font-hand text-3xl font-bold">only one telling so far</p>
+          <p className="font-hand text-3xl font-bold">Only one telling so far</p>
           <p className="text-muted-foreground max-w-sm text-sm">
             Dive back in and write it again from memory, then come back to compare.
           </p>

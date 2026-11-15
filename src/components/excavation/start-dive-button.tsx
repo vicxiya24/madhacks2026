@@ -13,7 +13,7 @@ export function StartDiveButton({ memoryId }: { memoryId: string }) {
 
   return (
     <form action={formAction} className="grid gap-2">
-      <SubmitButton size="lg" className="w-full rounded-full" pendingLabel="Sinking down...">
+      <SubmitButton size="xl" className="w-full" pendingLabel="Sinking down...">
         <Waves aria-hidden />
         Dive back in
       </SubmitButton>

@@ -7,7 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { FieldError } from "@/components/ui/field-error";
 import { SubmitButton } from "@/components/submit-button";
 import { BearScale } from "@/components/bear/bear-scale";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { PeoplePicker, type DraftPerson } from "@/components/people/people-picker";
 import { CuePicker, type DraftCue } from "./cue-picker";
+import { ROUGH_TIMES } from "@/lib/memory/constants";
+import type { PersonSummary } from "@/lib/people";
 import { usePreservingAction } from "@/hooks/use-preserving-action";
 import type { MemoryEntryField } from "@/lib/memory/schemas";
 import type { ActionState } from "@/types/memory";
@@ -23,6 +28,7 @@ export type MemoryEntryDefaults = {
   vividness?: number | null;
   feeling?: number | null;
   cues?: DraftCue[];
+  people?: DraftPerson[];
 };
 
 const initialState: EntryState = { ok: false };
@@ -33,11 +39,17 @@ export function MemoryEntryForm({
   defaults = {},
   submitLabel,
   pendingLabel,
+  people,
+  cancelHref,
 }: {
   action: (state: EntryState, formData: FormData) => Promise<EntryState>;
   defaults?: MemoryEntryDefaults;
   submitLabel: string;
   pendingLabel: string;
+  /** Everyone in "People in my life", to pick from. */
+  people: PersonSummary[];
+  /** Shows a Cancel button that goes here without saving. */
+  cancelHref?: string;
 }) {
   const { state, onSubmit, isPending } = usePreservingAction(action, initialState);
   const errors = state.fieldErrors ?? {};
@@ -108,14 +120,22 @@ export function MemoryEntryForm({
             </div>
             <div className="grid gap-2">
               <Label htmlFor="eraLabel">...or roughly when</Label>
-              <Input
+              <select
                 id="eraLabel"
                 name="eraLabel"
-                defaultValue={defaults.eraLabel ?? undefined}
-                placeholder="the summer before 3rd grade"
-                maxLength={120}
-                className="rounded-xl bg-white/5"
-              />
+                defaultValue={ROUGH_TIMES.some((t) => t.label === defaults.eraLabel) ? defaults.eraLabel! : ""}
+                className="border-input h-9 w-full rounded-xl border bg-white/5 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [&>option]:bg-[#1d1f4a]"
+                aria-invalid={!!errors.eraLabel}
+                aria-describedby="eraLabel-error"
+              >
+                <option value="">Not sure / I know the date</option>
+                {ROUGH_TIMES.map((t) => (
+                  <option key={t.label} value={t.label}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+              <FieldError id="eraLabel-error" errors={errors.eraLabel} />
             </div>
           </div>
         </CardContent>
@@ -147,14 +167,23 @@ export function MemoryEntryForm({
       </Card>
 
       <Card>
-        <CardContent className="grid gap-2">
-          <h2 className="font-hand text-3xl font-bold">Who and what was there?</h2>
-          <p className="text-muted-foreground text-sm">
-            People, places, objects, and the smells, sounds and textures that bring it back.
-            Optional.
-          </p>
-          <CuePicker defaultCues={defaults.cues} />
-          <FieldError errors={errors.tags} />
+        <CardContent className="grid gap-6">
+          <div className="grid gap-2">
+            <h2 className="font-hand text-3xl font-bold">Who was there?</h2>
+            <p className="text-muted-foreground text-sm">
+              Pick from the people in your life, or add someone new. Optional.
+            </p>
+            <PeoplePicker people={people} defaultSelected={defaults.people} />
+            <FieldError errors={errors.people} />
+          </div>
+          <div className="grid gap-2 border-t border-white/10 pt-6">
+            <h2 className="font-hand text-3xl font-bold">What else was there?</h2>
+            <p className="text-muted-foreground text-sm">
+              Places, objects, and the smells, sounds and textures that bring it back. Optional.
+            </p>
+            <CuePicker defaultCues={defaults.cues} />
+            <FieldError errors={errors.tags} />
+          </div>
         </CardContent>
       </Card>
 
@@ -182,7 +211,12 @@ export function MemoryEntryForm({
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center justify-end gap-3">
+        {cancelHref && (
+          <Button asChild variant="ghost" size="lg" className="rounded-full px-6">
+            <Link href={cancelHref}>Cancel</Link>
+          </Button>
+        )}
         <SubmitButton size="lg" pending={isPending} pendingLabel={pendingLabel} className="rounded-full px-8">
           {submitLabel}
         </SubmitButton>

@@ -43,7 +43,7 @@ export function InfoTip({
         id={id}
         role="tooltip"
         className={cn(
-          "bg-popover absolute top-7 right-0 z-50 w-72 rounded-2xl border p-4 text-left text-xs leading-relaxed font-normal shadow-xl transition",
+          "bg-popover absolute top-8 right-0 z-50 w-72 rounded-2xl border p-4 text-left font-sans text-xs leading-relaxed font-normal shadow-xl transition",
           "sm:right-auto sm:left-1/2 sm:-translate-x-1/2",
           open ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0",
         )}

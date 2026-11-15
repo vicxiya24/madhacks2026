@@ -26,7 +26,7 @@ export default async function DivePage({ params }: Props) {
     <PageContainer narrow className="grid gap-6">
       <div>
         <Link href={`/dig/${memory.id}`} className="text-muted-foreground hover:text-foreground text-sm">
-          &larr; surface
+          &larr; Surface
         </Link>
         <p className="text-muted-foreground mt-4 font-mono text-xs">{when}</p>
         <h1 className="font-hand text-5xl leading-none font-bold">{memory.title}</h1>

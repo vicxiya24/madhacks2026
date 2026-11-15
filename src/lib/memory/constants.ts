@@ -19,14 +19,31 @@ export const RESTABILISATION_HOURS = 6;
  * `maxDays` is the upper bound (exclusive) for the band.
  */
 export const STRATA = [
-  { key: "week", label: "this week", maxDays: 7 },
-  { key: "month", label: "this month", maxDays: 31 },
-  { key: "year", label: "this year", maxDays: 365 },
-  { key: "years", label: "a few years ago", maxDays: 365 * 5 },
-  { key: "deep", label: "long, long ago", maxDays: Infinity },
+  { key: "week", label: "This week", maxDays: 7 },
+  { key: "month", label: "This month", maxDays: 31 },
+  { key: "year", label: "This year", maxDays: 365 },
+  { key: "years", label: "A few years ago", maxDays: 365 * 5 },
+  { key: "deep", label: "Long, long ago", maxDays: Infinity },
 ] as const;
 
 export type StratumKey = (typeof STRATA)[number]["key"];
+
+/**
+ * "Roughly when" choices for when you don't know the exact date. `daysAgo` is a
+ * rough midpoint, counted back from when the entry was written, so a memory
+ * written as "a few days ago" still sinks deeper as the months go by.
+ */
+export const ROUGH_TIMES = [
+  { label: "A few days ago", daysAgo: 3 },
+  { label: "A few weeks ago", daysAgo: 14 },
+  { label: "A few months ago", daysAgo: 90 },
+  { label: "About a year ago", daysAgo: 365 },
+  { label: "A few years ago", daysAgo: 365 * 3 },
+  { label: "A long, long time ago", daysAgo: Infinity },
+] as const;
+
+export type RoughTime = (typeof ROUGH_TIMES)[number]["label"];
+export const ROUGH_TIME_LABELS = ROUGH_TIMES.map((t) => t.label) as [RoughTime, ...RoughTime[]];
 
 /** Retrieval cues ("artifacts") a memory can be tagged with, grouped for the picker. */
 export const CUE_CATEGORIES: Record<
@@ -44,9 +61,11 @@ export const CUE_CATEGORIES: Record<
   emotion: { label: "Emotion", group: "things", hint: "embarrassment" },
 };
 
-/** Categories offered in the picker (emotion is covered by the feeling scale). */
+/**
+ * Categories offered in the cue picker. People have their own picker
+ * (with avatars), and emotion is covered by the feeling scale.
+ */
 export const PICKER_CATEGORIES: TagCategory[] = [
-  "person",
   "location",
   "object",
   "sight",

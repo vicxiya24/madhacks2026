@@ -9,15 +9,18 @@ type Props = {
   disabled?: boolean;
   className?: string;
   label?: string;
+  size?: "md" | "sm";
 };
 
 /** Cloud-like thought bubble with trailing dots, as in the sketch. */
-export function ThoughtBubble({ href, children, tail, disabled, className, label }: Props) {
+export function ThoughtBubble({ href, children, tail, disabled, className, label, size = "md" }: Props) {
   const bubble = (
     <span
       className={cn(
-        "relative grid min-h-24 min-w-36 place-items-center rounded-[50%] border-[3px] px-6 py-5 text-center sm:min-h-28 sm:min-w-44 sm:px-8 sm:py-6",
-        "font-hand text-2xl leading-none font-bold sm:text-3xl",
+        "relative grid place-items-center rounded-[50%] border-[3px] text-center font-hand leading-none font-bold",
+        size === "md"
+          ? "min-h-24 min-w-36 px-6 py-5 text-2xl sm:min-h-28 sm:min-w-44 sm:px-8 sm:py-6 sm:text-3xl"
+          : "min-h-20 min-w-32 px-5 py-4 text-xl sm:min-h-24 sm:min-w-40 sm:px-6 sm:py-5 sm:text-2xl",
         "border-[#c9d6ff] bg-white/8 text-[#eef1ff] backdrop-blur-sm",
         "shadow-[0_0_40px_-8px_rgb(160_185_230_/_0.55)] transition duration-300",
         !disabled &&

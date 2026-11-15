@@ -44,11 +44,12 @@ export default async function FossilPage({ params }: Props) {
     EDIT_WINDOW_HOURS - (Date.now() - new Date(memory.created_at).getTime()) / 36e5,
   );
   const revisits = memory.layers.filter((l) => l.layer_type === "reframe").length;
+  const canCompare = memory.layers.length > 1;
 
   return (
     <PageContainer className="grid gap-8">
       <Link href="/dig" className="text-muted-foreground hover:text-foreground text-sm">
-        &larr; back to the dig site
+        &larr; Back to the dig site
       </Link>
 
       <div className="grid items-center gap-8 md:grid-cols-[auto_1fr]">
@@ -71,94 +72,112 @@ export default async function FossilPage({ params }: Props) {
         <CueList cues={memory.tags} />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <div className="grid content-start gap-4">
-          <Card>
-            <CardContent className="grid gap-4">
-              <div>
-                <h2 className="font-hand text-3xl font-bold">
-                  {memory.activeSession ? "You're mid-dive" : "Try to remember it first"}
-                </h2>
-                <p className="text-muted-foreground mt-1 text-sm">
-                  Dive back in and write it down again from memory, using only the clue. Then
-                  see how your memory has shifted since you first buried it.
-                </p>
-              </div>
-              {memory.activeSession ? (
-                <Button asChild size="lg" className="rounded-full">
-                  <Link href={`/dig/${memory.id}/excavate/${memory.activeSession.id}`}>
-                    <Activity aria-hidden /> Return to your dive
-                  </Link>
-                </Button>
-              ) : (
-                <StartDiveButton memoryId={memory.id} />
-              )}
-            </CardContent>
-          </Card>
-
-          <details className="group rounded-3xl border bg-white/[0.03]">
-            <summary className="flex cursor-pointer list-none items-center gap-2 px-6 py-4 text-sm font-medium [&::-webkit-details-marker]:hidden">
-              <BookOpen className="size-4" aria-hidden />
-              Just read what you wrote
-              <span className="text-muted-foreground ml-auto text-xs group-open:hidden">
-                (tip: try remembering first)
-              </span>
-            </summary>
-            <div className="px-4 pb-4">
-              <LayerStack layers={memory.layers} />
+      {/* The two things this page is for: remember it again, then compare. */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="border-[#c9d6ff]/30">
+          <CardContent className="grid h-full content-between gap-5">
+            <div>
+              <h2 className="font-hand text-3xl font-bold">
+                {memory.activeSession ? "You're mid-dive" : "Try to remember it first"}
+              </h2>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Dive back in and write it down again from memory, using only the clue.
+              </p>
             </div>
-          </details>
-        </div>
+            {memory.activeSession ? (
+              <Button asChild size="xl" className="w-full">
+                <Link href={`/dig/${memory.id}/excavate/${memory.activeSession.id}`}>
+                  <Activity aria-hidden /> Return to your dive
+                </Link>
+              </Button>
+            ) : (
+              <StartDiveButton memoryId={memory.id} />
+            )}
+          </CardContent>
+        </Card>
 
-        <aside className="grid content-start gap-4">
+        <Card className="border-[#f6d38b]/30">
+          <CardContent className="grid h-full content-between gap-5">
+            <div>
+              <h2 className="font-hand text-3xl font-bold">See how it&apos;s changed</h2>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {canCompare
+                  ? "Put your first telling next to your latest one, and see how vivid it is and how it feels now compared with then."
+                  : "Once you've dived back in, you can put your retelling next to what you first wrote."}
+              </p>
+            </div>
+            {canCompare ? (
+              <Button asChild size="xl" className="w-full bg-[#f6d38b] text-[#2a2140] hover:bg-[#f8dea6]">
+                <Link href={`/dig/${memory.id}/delta`}>
+                  <GitCompareArrows aria-hidden /> See how it&apos;s changed
+                </Link>
+              </Button>
+            ) : (
+              <Button size="xl" disabled className="w-full bg-[#f6d38b] text-[#2a2140]">
+                <GitCompareArrows aria-hidden /> Dive in first to compare
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardContent className="grid gap-3">
+            <SettledHeading />
+            <ConsolidationMeter reading={reading} />
+          </CardContent>
+        </Card>
+
+        {(vivid || feeling) && (
           <Card>
             <CardContent className="grid gap-3">
-              <SettledHeading />
-              <ConsolidationMeter reading={reading} />
+              <h2 className="font-hand text-2xl font-bold">Last time you checked</h2>
+              <div className="grid grid-cols-2 gap-2 text-center">
+                {[
+                  { step: vivid, caption: "Vividness" },
+                  { step: feeling, caption: "Feeling" },
+                ].map(({ step, caption }) =>
+                  step ? (
+                    <div key={caption} className="grid justify-items-center gap-1">
+                      <BearSvg variant={variant} expression={step.expression} mode="head" className="h-auto w-16" title={step.label} />
+                      <span className="font-hand text-lg leading-none font-bold">{step.label}</span>
+                      <span className="text-muted-foreground text-xs">{caption}</span>
+                    </div>
+                  ) : (
+                    <div key={caption} />
+                  ),
+                )}
+              </div>
             </CardContent>
           </Card>
+        )}
+      </div>
 
-          {memory.layers.length > 1 && (
-            <Button asChild variant="outline" className="rounded-full">
-              <Link href={`/dig/${memory.id}/delta`}>
-                <GitCompareArrows aria-hidden /> See how it&apos;s changed
-              </Link>
-            </Button>
-          )}
+      <details className="group rounded-3xl border bg-white/[0.03]">
+        <summary className="flex cursor-pointer list-none items-center gap-2 px-6 py-4 text-sm font-medium [&::-webkit-details-marker]:hidden">
+          <BookOpen className="size-4" aria-hidden />
+          Just read what you wrote
+          <span className="text-muted-foreground ml-auto text-xs group-open:hidden">
+            (tip: try remembering first)
+          </span>
+        </summary>
+        <div className="px-4 pb-4">
+          <LayerStack layers={memory.layers} />
+        </div>
+      </details>
 
-          {(vivid || feeling) && (
-            <Card>
-              <CardContent className="grid gap-3">
-                <h2 className="text-sm font-medium">Last time you checked</h2>
-                <div className="grid grid-cols-2 gap-2 text-center">
-                  {[
-                    { step: vivid, caption: "vividness" },
-                    { step: feeling, caption: "feeling" },
-                  ].map(({ step, caption }) =>
-                    step ? (
-                      <div key={caption} className="grid justify-items-center gap-1">
-                        <BearSvg variant={variant} expression={step.expression} mode="head" className="h-auto w-16" title={step.label} />
-                        <span className="font-hand text-lg leading-none font-bold">{step.label}</span>
-                        <span className="text-muted-foreground text-[11px]">{caption}</span>
-                      </div>
-                    ) : (
-                      <div key={caption} />
-                    ),
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {editable && (
-            <Button asChild variant="ghost" className="rounded-full">
-              <Link href={`/dig/${memory.id}/edit`}>
-                <Pencil aria-hidden /> Edit entry ({Math.max(1, hoursLeft)}h left)
-              </Link>
-            </Button>
-          )}
-          <DeleteMemoryButton memoryId={memory.id} title={memory.title} />
-        </aside>
+      <div className="flex flex-wrap items-start justify-between gap-3 border-t border-white/10 pt-6">
+        {editable ? (
+          <Button asChild variant="outline" className="rounded-full">
+            <Link href={`/dig/${memory.id}/edit`}>
+              <Pencil aria-hidden /> Edit entry ({Math.max(1, hoursLeft)}h left)
+            </Link>
+          </Button>
+        ) : (
+          <span />
+        )}
+        <DeleteMemoryButton memoryId={memory.id} title={memory.title} />
       </div>
     </PageContainer>
   );

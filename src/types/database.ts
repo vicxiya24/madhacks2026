@@ -199,6 +199,7 @@ export type Database = {
           user_id: string;
           category: TagCategory;
           label: string;
+          avatar: string | null;
           created_at: string;
         };
         Insert: {
@@ -206,6 +207,7 @@ export type Database = {
           user_id?: string;
           category: TagCategory;
           label: string;
+          avatar?: string | null;
           created_at?: string;
         };
         Update: {
@@ -213,6 +215,7 @@ export type Database = {
           user_id?: string;
           category?: TagCategory;
           label?: string;
+          avatar?: string | null;
           created_at?: string;
         };
         Relationships: [];

@@ -33,7 +33,7 @@ export function CharacterPicker({ initial }: { initial: BearVariant }) {
         <CardContent className="grid gap-5">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
-              <h2 className="font-hand text-3xl font-bold">choose your bear</h2>
+              <h2 className="font-hand text-3xl font-bold">Choose your bear</h2>
               <p className="text-muted-foreground text-sm">
                 Your bear sits on the home screen, shows up on your rating scales, and will star in
                 the digging and burying animations.
@@ -42,13 +42,13 @@ export function CharacterPicker({ initial }: { initial: BearVariant }) {
             <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs" aria-live="polite">
               {pending ? (
                 <>
-                  <Loader2 className="size-3.5 animate-spin" aria-hidden /> saving...
+                  <Loader2 className="size-3.5 animate-spin" aria-hidden /> Saving...
                 </>
               ) : error ? (
                 <span className="text-destructive">{error}</span>
               ) : (
                 <>
-                  <Check className="size-3.5" aria-hidden /> saved
+                  <Check className="size-3.5" aria-hidden /> Saved
                 </>
               )}
             </span>
@@ -87,7 +87,7 @@ export function CharacterPicker({ initial }: { initial: BearVariant }) {
       <Card>
         <CardContent className="grid gap-5">
           <div>
-            <h2 className="font-hand text-3xl font-bold">your scales</h2>
+            <h2 className="font-hand text-3xl font-bold">Your scales</h2>
             <p className="text-muted-foreground text-sm">How your bear will look when you rate a memory.</p>
           </div>
           {[

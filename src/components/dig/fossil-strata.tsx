@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowDown } from "lucide-react";
 import { FossilImage } from "./fossil";
-import { STRATA, type StratumKey } from "@/lib/memory/constants";
+import { ROUGH_TIMES, STRATA, type StratumKey } from "@/lib/memory/constants";
 import type { MemoryWithStrata } from "@/types/memory";
 import { cn, formatDate, hashString, seededRandom } from "@/lib/utils";
 
@@ -22,10 +22,27 @@ const WAVES = [
   "M0 25 C 300 55, 560 5, 820 40 S 1100 20, 1200 45 L1200 61 L0 61 Z",
 ];
 
-/** Which stratum a memory belongs to, by how long ago it happened. Undated memories sink deepest. */
-export function stratumFor(memory: Pick<MemoryWithStrata, "occurred_on">, now: number): StratumKey {
-  if (!memory.occurred_on) return "deep";
-  const days = (now - new Date(`${memory.occurred_on}T00:00:00Z`).getTime()) / 864e5;
+/**
+ * How many days ago a memory happened: from its exact date if it has one,
+ * otherwise from the rough choice, counted back from when it was written.
+ * Undated memories (and old free-text rough dates) sink deepest.
+ */
+export function daysAgo(
+  memory: Pick<MemoryWithStrata, "occurred_on" | "era_label" | "created_at">,
+  now: number,
+): number {
+  if (memory.occurred_on) return (now - new Date(`${memory.occurred_on}T00:00:00Z`).getTime()) / 864e5;
+  const rough = ROUGH_TIMES.find((t) => t.label.toLowerCase() === memory.era_label?.trim().toLowerCase());
+  if (!rough) return Infinity;
+  return (now - new Date(memory.created_at).getTime()) / 864e5 + rough.daysAgo;
+}
+
+/** Which stratum a memory belongs to, by how long ago it happened. */
+export function stratumFor(
+  memory: Pick<MemoryWithStrata, "occurred_on" | "era_label" | "created_at">,
+  now: number,
+): StratumKey {
+  const days = daysAgo(memory, now);
   return STRATA.find((s) => days < s.maxDays)?.key ?? "deep";
 }
 
@@ -64,13 +81,15 @@ export function FossilStrata({
   highlightId?: string;
 }) {
   const byBand = new Map<StratumKey, MemoryWithStrata[]>(STRATA.map((s) => [s.key, []]));
-  for (const m of memories) byBand.get(stratumFor(m, now))!.push(m);
+  for (const m of [...memories].sort((a, b) => daysAgo(a, now) - daysAgo(b, now))) {
+    byBand.get(stratumFor(m, now))!.push(m);
+  }
 
   return (
     <div className="relative">
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-6 pb-16 text-[#c9d6ff]">
         <ArrowDown className="size-8 animate-bounce" strokeWidth={3} aria-hidden />
-        <span className="font-hand text-xl">scroll down to dig deeper into the past</span>
+        <span className="font-hand text-xl">Scroll down to dig deeper into the past</span>
       </div>
 
       {STRATA.map((band, i) => {
@@ -100,7 +119,7 @@ export function FossilStrata({
 
               {fossils.length === 0 ? (
                 <p className={cn("font-hand py-8 text-lg", style.sub)}>
-                  nothing buried here yet...
+                  Nothing buried here yet...
                 </p>
               ) : (
                 <ul className="mt-4 flex flex-wrap justify-around gap-x-6 gap-y-4">
@@ -133,7 +152,7 @@ export function FossilStrata({
                           </span>
                           <span className={cn("text-[11px]", style.sub)}>
                             {when}
-                            {digging && " · diving"}
+                            {digging && " · mid-dive"}
                           </span>
                         </Link>
                       </li>

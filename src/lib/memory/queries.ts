@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { EDIT_WINDOW_HOURS } from "./constants";
+import type { PersonSummary } from "@/lib/people";
 import type {
   ExcavationSession,
   Memory,
@@ -13,7 +14,7 @@ import type {
 const MEMORY_SELECT = `
   *,
   memory_layers (*),
-  memory_tags ( tags ( id, category, label ) ),
+  memory_tags ( tags ( id, category, label, avatar ) ),
   excavation_sessions ( * )
 ` as const;
 
@@ -85,6 +86,22 @@ export const getEditableMemory = cache(
     return data;
   },
 );
+
+export type PersonWithCount = PersonSummary & { memoryCount: number };
+
+/** Everyone in "People in my life" (the user's `person` tags), A to Z. */
+export const listPeople = cache(async (): Promise<PersonWithCount[]> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("tags")
+    .select("id, label, avatar, memory_tags(count)")
+    .eq("category", "person")
+    .order("label");
+
+  if (error) throw new Error(`Failed to load people: ${error.message}`);
+  const rows = data as unknown as (PersonSummary & { memory_tags: { count: number }[] | null })[];
+  return rows.map(({ memory_tags, ...p }) => ({ ...p, memoryCount: memory_tags?.[0]?.count ?? 0 }));
+});
 
 export function isEditable(memory: Pick<Memory, "created_at">, now = Date.now()) {
   return now - new Date(memory.created_at).getTime() < EDIT_WINDOW_HOURS * 36e5;

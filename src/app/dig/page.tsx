@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { ArrowUp, Plus } from "lucide-react";
-import { SurfaceLink } from "@/components/dream/scene-transitions";
+import { SceneIn, SurfaceLink } from "@/components/dream/scene-transitions";
 import { Button } from "@/components/ui/button";
 import { FossilStrata } from "@/components/dig/fossil-strata";
 import { listMemories } from "@/lib/memory/queries";
@@ -18,6 +18,9 @@ export default async function DigSitePage({
   const [{ buried }, memories] = await Promise.all([searchParams, listMemories()]);
 
   return (
+    // SceneIn (rise in after a dive) wraps surface-scene (drop away when surfacing)
+    // so the arrival animation never pins the transform the exit transition needs.
+    <SceneIn from="diving">
     <div className="surface-scene pt-6">
       <div className="mx-auto max-w-5xl px-6 pb-2">
         <SurfaceLink
@@ -29,8 +32,8 @@ export default async function DigSitePage({
       </div>
       <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-4 px-6 pt-4 pb-6">
         <div>
-          <h1 className="font-hand text-5xl font-bold">your dig site</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <h1 className="font-hand text-5xl leading-tight font-bold">Your dig site</h1>
+          <p className="text-muted-foreground mt-4 text-sm">
             {memories.length === 0
               ? "Nothing's buried yet. Write your first entry and it'll settle into the layers below."
               : buried
@@ -47,5 +50,6 @@ export default async function DigSitePage({
 
       <FossilStrata memories={memories} now={Date.now()} highlightId={buried} />
     </div>
+    </SceneIn>
   );
 }

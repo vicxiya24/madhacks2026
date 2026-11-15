@@ -18,11 +18,12 @@ npm install
 cp .env.example .env.local      # fill in Supabase URL + anon key (OpenAI key optional)
 ```
 
-**Database**: run both migrations in order (Supabase dashboard → SQL Editor, or `supabase db push`):
+**Database**: run the migrations in order (Supabase dashboard → SQL Editor, or `supabase db push`):
 
 1. `supabase/migrations/20261114000000_init_memory_archaeologist.sql`
 2. `supabase/migrations/20261115000000_dreamlike_redesign.sql`
 3. `supabase/migrations/20261116000000_bears_and_scales.sql`
+4. `supabase/migrations/20261117000000_people_avatars.sql`
 
 **Auth**: Email/password is enabled by default. For quick hackathon demos, you can turn off
 *Confirm email* under Authentication → Providers → Email. Otherwise, add
@@ -38,11 +39,12 @@ npm run dev                     # http://localhost:3000
 | --- | --- |
 | Home: date, dreaming bear, "New entry" / "Edit entry" (24h) bubbles, "Dive" | `src/app/page.tsx`, `src/components/dream/` |
 | New entry: "Rant to me about this event", vividness + feeling bear scales, people/places/objects/senses, a clue for future you | `src/components/memory/memory-entry-form.tsx` → `create_memory()` |
+| People in my life: add people, give each an animal avatar, search and tag them in entries | `src/app/people`, `src/components/people/`, `src/lib/people.ts` |
 | Character customisation (5 bears) used on home + rating scales | `src/app/settings`, `src/lib/bears.ts`, `src/components/bear/` |
 | Dive / surface transitions between home and the dig site | `src/components/dream/scene-transitions.tsx` |
 | Delete an entry | `src/components/memory/delete-memory-button.tsx` |
 | Edit entry within 24h of writing | `src/app/dig/[id]/edit`, `update_recent_memory()` RPC + RLS policy |
-| Dig site: strata by time distance, each memory a fossil | `src/components/dig/fossil-strata.tsx`, `public/fossils/` |
+| Dig site: strata by time distance (exact date, or a rough "a few weeks ago" style choice), each memory a fossil | `src/components/dig/fossil-strata.tsx`, `public/fossils/` |
 | Dive back in: recall from the clue only, with the earlier entry hidden | `src/app/dig/[id]/excavate/[sessionId]`, `src/components/excavation/` |
 | Nudge prompt (from title + clue only, so it can't leak the entry) | `src/lib/ai/prediction-error.ts` |
 | How it's changed: then vs now + vividness and feeling shifts | `src/components/delta/version-delta.tsx` |

@@ -7,7 +7,7 @@ export type MemoryLayer = Tables<"memory_layers">;
 export type ExcavationSession = Tables<"excavation_sessions">;
 export type Tag = Tables<"tags">;
 
-export type TagSummary = Pick<Tag, "id" | "category" | "label">;
+export type TagSummary = Pick<Tag, "id" | "category" | "label" | "avatar">;
 
 /** A memory joined with its strata and retrieval cues. */
 export type MemoryWithStrata = Memory & {

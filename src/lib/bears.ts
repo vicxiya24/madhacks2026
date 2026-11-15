@@ -111,20 +111,20 @@ export type ScaleStep = { value: 1 | 2 | 3 | 4 | 5; label: string; expression: B
 
 /** 1 = barely there, 5 = like it happened yesterday. */
 export const VIVIDNESS_SCALE: ScaleStep[] = [
-  { value: 1, label: "foggy", expression: { eyes: "closed", mouth: "flat", extra: "fog" } },
-  { value: 2, label: "hazy", expression: { eyes: "sleepy", mouth: "flat" } },
-  { value: 3, label: "patchy", expression: { eyes: "dot", mouth: "flat" } },
-  { value: 4, label: "clear", expression: { eyes: "wide", mouth: "smile" } },
-  { value: 5, label: "crystal clear", expression: { eyes: "sparkle", mouth: "o", extra: "sparkles" } },
+  { value: 1, label: "Foggy", expression: { eyes: "closed", mouth: "flat", extra: "fog" } },
+  { value: 2, label: "Hazy", expression: { eyes: "sleepy", mouth: "flat" } },
+  { value: 3, label: "Patchy", expression: { eyes: "dot", mouth: "flat" } },
+  { value: 4, label: "Clear", expression: { eyes: "wide", mouth: "smile" } },
+  { value: 5, label: "Crystal clear", expression: { eyes: "sparkle", mouth: "o", extra: "sparkles" } },
 ];
 
 /** 1 = painful, 5 = warm. */
 export const FEELING_SCALE: ScaleStep[] = [
-  { value: 1, label: "painful", expression: { eyes: "sad", mouth: "wobble", extra: "tears" } },
-  { value: 2, label: "heavy", expression: { eyes: "sad", mouth: "frown", extra: "tear" } },
-  { value: 3, label: "mixed", expression: { eyes: "dot", mouth: "flat" } },
-  { value: 4, label: "warm", expression: { eyes: "dot", mouth: "smile" } },
-  { value: 5, label: "glowing", expression: { eyes: "happy", mouth: "grin", extra: "sparkles" } },
+  { value: 1, label: "Painful", expression: { eyes: "sad", mouth: "wobble", extra: "tears" } },
+  { value: 2, label: "Heavy", expression: { eyes: "sad", mouth: "frown", extra: "tear" } },
+  { value: 3, label: "Mixed", expression: { eyes: "dot", mouth: "flat" } },
+  { value: 4, label: "Warm", expression: { eyes: "dot", mouth: "smile" } },
+  { value: 5, label: "Glowing", expression: { eyes: "happy", mouth: "grin", extra: "sparkles" } },
 ];
 
 export type ScaleKind = "vividness" | "feeling";

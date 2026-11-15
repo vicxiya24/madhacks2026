@@ -16,7 +16,7 @@ export type DraftCue = { category: TagCategory; label: string };
  */
 export function CuePicker({ name = "tags", defaultCues = [] }: { name?: string; defaultCues?: DraftCue[] }) {
   const [cues, setCues] = useState<DraftCue[]>(defaultCues);
-  const [category, setCategory] = useState<TagCategory>("person");
+  const [category, setCategory] = useState<TagCategory>("location");
   const [label, setLabel] = useState("");
 
   const add = () => {

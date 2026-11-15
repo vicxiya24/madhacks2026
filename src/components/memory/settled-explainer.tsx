@@ -4,7 +4,7 @@ import { SETTLED_LABELS } from "./consolidation-meter";
 /** "How settled is it?" heading with a hover/tap explanation. */
 export function SettledHeading() {
   return (
-    <h2 className="flex items-center gap-1.5 text-sm font-medium">
+    <h2 className="font-hand flex items-center gap-2 text-2xl font-bold">
       How settled is it?
       <InfoTip label="What does 'how settled' mean?">
         <span className="block">

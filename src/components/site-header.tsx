@@ -8,13 +8,16 @@ export function SiteHeader({ email }: { email?: string | null }) {
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4">
         <Link href="/" className="font-hand flex items-center gap-2 text-2xl font-bold text-[#eef1ff]">
           <Moon className="size-5 fill-[#f3ead2] text-[#f3ead2]" aria-hidden />
-          memory archaeologist
+          Memory Archaeologist
         </Link>
         <nav className="flex items-center gap-1 text-sm">
           {email && (
             <>
               <Link href="/dig" className="rounded-full px-3 py-2 text-[#c9d6ff] hover:bg-white/10">
                 Dig site
+              </Link>
+              <Link href="/people" className="hidden rounded-full px-3 py-2 text-[#c9d6ff] hover:bg-white/10 sm:block">
+                People
               </Link>
               <Link href="/dig/new" className="hidden rounded-full px-3 py-2 text-[#c9d6ff] hover:bg-white/10 sm:block">
                 New entry

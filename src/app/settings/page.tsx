@@ -33,7 +33,7 @@ export default async function SettingsPage({
       <SiteHeader email={user.email} />
       <main>
         <PageContainer className="grid gap-6">
-          <h1 className="font-hand text-5xl font-bold">settings</h1>
+          <h1 className="font-hand text-5xl font-bold">Settings</h1>
 
           <nav className="flex gap-1 rounded-full bg-white/5 p-1 sm:w-fit" role="tablist" aria-label="Settings sections">
             {TABS.map((t) => (
@@ -58,7 +58,7 @@ export default async function SettingsPage({
             <Card>
               <CardContent className="grid gap-4">
                 <div>
-                  <h2 className="font-hand text-3xl font-bold">account</h2>
+                  <h2 className="font-hand text-3xl font-bold">Account</h2>
                   <p className="text-muted-foreground text-sm">Signed in as {user.email}</p>
                 </div>
                 <form action={signOut}>
